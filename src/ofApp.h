@@ -4,6 +4,25 @@
 #include "utils.h"
 #include "sound_generation.h"
 
+enum class Notes
+{
+	Do,
+	Do_diese,
+	Re,
+	Re_diese,
+	Mi,
+	Fa,
+	Fa_diese,
+	Sol,
+	Sol_diese,
+	La,
+	La_diese,
+	Si	
+};
+
+
+
+
 class ofApp : public ofBaseApp{
 
 	public:
@@ -25,7 +44,8 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
 		void audioOut(ofSoundBuffer & buffer);
-		
+		//------ calculate the pitch
+		int keytopitch(int key, int  baseoctave, int note);
 		
 		ofSoundStream soundStream;
 
@@ -54,4 +74,8 @@ class ofApp : public ofBaseApp{
 
 		float y1_pass_filter;
 		float y2_pass_filter;
+
+		//---------- for calculate frequency from keyboard input and note
+		int baseoctave = 4;
+		int note;
 };

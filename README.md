@@ -27,24 +27,24 @@ Touches sur le clavier et notes correspondantes:
 | Touches clavier | Note |
 |--- |--- |
 |q|Do |
-|s|Do# | 
-|d|Ré |
-|f |Ré# | 
-|g |Mi | 
-|h|Fa | 
-|j|Fa# | 
-|k|Sol | 
-|l|Sol# | 
-|m|La | 
-|ù|La# | 
-|*|fzuSi |
+|z|Do# | 
+|s|Ré |
+|e |Ré# | 
+|d |Mi | 
+|f|Fa | 
+|t|Fa# | 
+|g|Sol | 
+|y|Sol# | 
+|h|La | 
+|u|La# | 
+|j|fzuSi |
 
 Autres commandes sur les touches : 
 | Touches clavier | Action |
 |--- |--- |
 |+| Volume up |
 |-| Volume down |
-|w| Octave up |
-|x| Octave down |
-|s| start|
-s
+| | Octave up |
+|| Octave down |
+|*| start|
+|/| stop|
