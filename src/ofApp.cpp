@@ -146,7 +146,7 @@ void ofApp::draw() {
     ofTranslate(32, 375, 0);
 
     std::vector<float> test_var;
-    
+
     if (!use_pass_filter) {
         ofSetColor(225);
         ofDrawBitmapString("Fourier transform (Left Channel)", 4, 18);
@@ -177,6 +177,7 @@ void ofApp::draw() {
 
     ofPopMatrix();
     ofPopStyle();
+
 
     // Draw FOURRIER RIGHT channel:
     ofPushStyle();
