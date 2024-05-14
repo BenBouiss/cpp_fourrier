@@ -5,32 +5,37 @@
 #include <iostream>
 using namespace std;
 
-std::vector<float> get_fourrier_transform_from_signal(std::vector<float> sound, int sampling_rate){
+std::vector<float> get_fourier_transform_from_signal(std::vector<float> sound, int sampling_rate){
 	int N = sound.size();
 
-	std::vector<float> fourrier_vector(N); 
+	std::vector<float> fourier_vector(N); 
 
 	const std::complex<double>i (0.0, 1.0);
 	double pi = 3.14159265358979323846;
 
 	for (int k = 0; k < N; k++){
 		/* exp : std::exp(e) */
-		/* Fourrier transform formula: X[k] = sum(N-1, n = 0, x[n] * exp(-2*i*pi*k*n/N))	
+		/* fourier transform formula: X[k] = sum(N-1, n = 0, x[n] * exp(-2*i*pi*k*n/N))	
 		*/
 		std::complex<double> sum = (0.0, 0.0);
 		for (int n = 0; n < N; n++){
 			sum+=std::exp(- 2.0 *i*pi*(double)k*(double)n / (double)N)*(double)sound[n];
 		}
-		fourrier_vector[k] = std::norm(sum)*(1/std::sqrt(N));
+		fourier_vector[k] = std::norm(sum)*(1/std::sqrt(N));
 		if (k >= N/2){
-			return fourrier_vector;
+			return fourier_vector;
 		}
 	}
 
-	return fourrier_vector;
+	return fourier_vector;
 }
 
-
+void reset_pass_filter_coeff(float & x1, float & x2, float & y1, float & y2){
+	x1 = 0;
+    x2 = 0;
+    y1 = 0;
+    y2 = 0;
+}
 void print_array_float(std::vector<float> vect){
 	for (int i = 0; i < vect.size(); i++){ 
 		std::cout << vect[i] << " " ;
