@@ -48,6 +48,3 @@ void pause_program_execution(){
 float pitchToFrequency(int pitch, float A4frequency = 440.f, int A4pitch = 69){
 	return A4frequency * pow(2, ((pitch - A4pitch) / 12.f));
 }
-
-
-

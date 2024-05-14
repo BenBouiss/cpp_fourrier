@@ -92,7 +92,13 @@
 			"unordered_set": "cpp",
 			"regex": "cpp",
 			"future": "cpp",
-			"shared_mutex": "cpp"
+			"shared_mutex": "cpp",
+			"*.ipp": "cpp",
+			"__bit_reference": "cpp",
+			"__hash_table": "cpp",
+			"__split_buffer": "cpp",
+			"__tree": "cpp",
+			"filesystem": "cpp"
 		},
 		"makefile.launchConfigurations": [
 			{
