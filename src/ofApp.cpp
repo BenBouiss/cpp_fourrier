@@ -1,5 +1,6 @@
 #include "ofApp.h"
 #include "utils.h"
+#include "sound_generation.h"
 //--------------------------------------------------------------
 void ofApp::setup() {
 
@@ -12,6 +13,17 @@ void ofApp::setup() {
   phaseAdderTarget = 0.0f;
   volume = 0.1f;
   bNoise = false;
+
+  use_pass_filter = false;
+
+	omega0 = 0.1;
+  quality = 0.8;
+
+	x1_pass_filter = 0;
+	x2_pass_filter = 0;
+
+	y1_pass_filter = 0;
+	y2_pass_filter = 0;
 
   lAudio.assign(bufferSize, 0.0);
   rAudio.assign(bufferSize, 0.0);
@@ -76,11 +88,11 @@ void ofApp::draw() {
   ofSetColor(225);
   ofDrawBitmapString("AUDIO OUTPUT EXAMPLE", 32, 32);
   ofDrawBitmapString(
-      "press 's' to unpause the audio\npress 'e' to pause the audio", 31, 92);
+      "press 's' to unpause the audio\npress 'e' to pause the audio\npress 'p' to enable/disable pass filter\npress 'r' to reset the pass filter ", 31, 92);
 
   ofNoFill();
 
-  // draw the left channel:
+  // draw the LEFT channel:
   ofPushStyle();
   ofPushMatrix();
   ofTranslate(32, 150, 0);
@@ -89,14 +101,14 @@ void ofApp::draw() {
   ofDrawBitmapString("Left Channel", 4, 18);
 
   ofSetLineWidth(1);
-  ofDrawRectangle(0, 0, 900, 200);
+  ofDrawRectangle(0, 0, 430, 200);
 
   ofSetColor(245, 58, 135);
   ofSetLineWidth(3);
 
   ofBeginShape();
   for (unsigned int i = 0; i < lAudio.size(); i++) {
-    float x = ofMap(i, 0, lAudio.size(), 0, 900, true);
+    float x = ofMap(i, 0, lAudio.size(), 0, 430, true);
     ofVertex(x, 100 - lAudio[i] * 180.0f);
   }
   ofEndShape(false);
@@ -104,46 +116,164 @@ void ofApp::draw() {
   ofPopMatrix();
   ofPopStyle();
 
-  // draw the right channel:
+  // draw the RIGHT channel:
   ofPushStyle();
   ofPushMatrix();
-  ofTranslate(32, 350, 0);
+  ofTranslate(32, 150, 0);
 
   ofSetColor(225);
-  ofDrawBitmapString("Fourrier transform", 4, 18);
+  std::vector<float> test_var;
+  if (!use_pass_filter){
+    ofDrawBitmapString("Fourrier transform", 4, 18);
 
-  std::vector<float> test_var = get_fourrier_transform_from_signal(rAudio, sampleRate);
+    test_var = get_fourrier_transform_from_signal(rAudio, sampleRate);
+  }else{
+    ofDrawBitmapString("pass filter", 4, 18);
+    //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
+    //                                    float & x1, float & x2, float quality, float omega0, bool use_recursive, bool low_filter, bool high_filter);
 
+    
+    test_var = soustractive_synthese(rAudio, 2, rAudio.size(), 
+                          y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, true);
+    
+  }
   ofSetLineWidth(1);
-  ofDrawRectangle(0, 0, 900, 200);
+  ofDrawRectangle(470, 0, 430, 200);
 
   ofSetColor(245, 58, 135);
   ofSetLineWidth(3);
 
   ofBeginShape();
-
   for (unsigned int i = 0; i < rAudio.size(); i++) {
-    float x = ofMap(i, 0, test_var.size(), 0, 900, true);
-    ofVertex(x, 200 - test_var[i]);
+    float x = ofMap(i, 0, rAudio.size(), 470, 900, true);
+    ofVertex(x, 100 - rAudio[i] * 180.0f);
   }
   ofEndShape(false);
 
   ofPopMatrix();
   ofPopStyle();
 
-  ofSetColor(225);
-  string reportString = "volume: (" + ofToString(volume, 2) +
-                        ") modify with -/+ keys\npan: (" + ofToString(pan, 2) +
-                        ") modify with mouse x\nsynthesis: ";
-  if (!bNoise) {
-    reportString += "sine wave (" + ofToString(targetFrequency, 2) +
-                    "hz) modify with mouse y";
-  } else {
-    reportString += "noise";
+// Draw FOURRIER LEFT channel:
+ofPushStyle();
+ofPushMatrix();
+ofTranslate(32, 375, 0);
+
+ofSetColor(225);
+ofDrawBitmapString("Fourier transform (Left Channel)", 4, 18);
+
+std::vector<float> left_transform = get_fourrier_transform_from_signal(lAudio, sampleRate);
+
+ofSetLineWidth(1);
+ofDrawRectangle(0, 0, 430, 200);
+
+ofSetColor(245, 58, 135);
+ofSetLineWidth(3);
+
+ofBeginShape();
+for (unsigned int i = 0; i < lAudio.size(); i++) {
+  float x = ofMap(i, 0, left_transform.size(), 470, 900, true);
+  ofVertex(x, 200 - left_transform[i]);
+}
+ofEndShape(false);
+
+ofPopMatrix();
+ofPopStyle();
+
+// Draw FOURRIER RIGHT channel:
+ofPushStyle();
+ofPushMatrix();
+ofTranslate(32, 375, 0);
+
+ofSetColor(225);
+ofDrawBitmapString("Fourier transform (Right Channel)", 474, 18);
+
+std::vector<float> right_transform = get_fourrier_transform_from_signal(rAudio, sampleRate);
+
+ofSetLineWidth(1);
+ofDrawRectangle(470, 0, 430, 200);
+
+ofSetColor(245, 58, 135);
+ofSetLineWidth(3);
+
+ofBeginShape();
+for (unsigned int i = 0; i < rAudio.size(); i++) {
+  float x = ofMap(i, 0, right_transform.size(), 50, 430, true);
+  ofVertex(x, 200 - right_transform[i]);
+}
+ofEndShape(false);
+
+ofPopMatrix();
+ofPopStyle();
+
+// Draw report string
+
+ofTranslate(32, 0, 0);
+
+ofSetColor(225);
+ofDrawBitmapString("Report", 954, 168);
+
+ofSetLineWidth(1);
+ofDrawRectangle(940, 150, 600, 425);
+
+ofSetColor(245, 58, 135);
+ofSetLineWidth(3);
+
+string reportString = "volume: (" + ofToString(volume, 2) +
+                      ") modify with -/+ keys\npan: (" + ofToString(pan, 2) +
+                      ") modify with mouse x\nsynthesis: ";
+if (!bNoise) {
+  reportString += "sine wave (" + ofToString(targetFrequency, 2) +
+                  "hz) modify with mouse y\n";
+} else {
+  reportString += "noise";
+}
+  if (use_pass_filter){
+    reportString += "omega_0: (" + ofToString(omega0, 2) + 
+                    ") modify with 1/2 keys\nquality: (" + ofToString(quality, 2) +
+                    "modify with 4/5 keys";
   }
-  ofDrawBitmapString(reportString, 32, 579);
+ofDrawBitmapString(reportString, 954, 200);
+
+// PIANO
+
+
+int numKeys = 7; 
+float keyWidth = 900 / numKeys;
+
+// WHITE keys
+ofSetColor(225);
+for(int i = 0; i < numKeys; i++) {
+    ofDrawRectangle(i * keyWidth, ofGetHeight() - 300, keyWidth, 100);
 }
 
+// BLACK keys
+ofSetColor(0);
+for(int i = 0; i < numKeys; i++) {
+    if(i != 2 && i != 6) { 
+        float x = i * keyWidth + keyWidth * 0.65;
+        ofDrawRectangle(x, ofGetHeight() - 300, keyWidth * 0.7, 60);
+    }
+}
+
+// Labels  WHITE keys
+ofSetColor(225);
+for(int i = 0; i < numKeys; i++) {
+    string label;
+    string keyboard_label;
+    switch(i) {
+        case 0: label = "C"; keyboard_label = "q"; break;
+        case 1: label = "D"; keyboard_label = "s"; break;
+        case 2: label = "E"; keyboard_label = "d"; break;
+        case 3: label = "F"; keyboard_label = "f"; break;
+        case 4: label = "G"; keyboard_label = "g"; break;
+        case 5: label = "A"; keyboard_label = "h"; break;
+        case 6: label = "B"; keyboard_label = "j"; break;
+    }
+    ofDrawBitmapString(label, i * keyWidth + keyWidth * 0.5, ofGetHeight() - 280);
+    ofDrawBitmapString(keyboard_label, i * keyWidth + keyWidth * 0.5, ofGetHeight() - 210);
+
+}
+}
 
 
 //--------------------------------------------------------------
@@ -162,6 +292,32 @@ void ofApp::keyPressed(int key) {
 
   if (key == 'e') {
     soundStream.stop();
+  }
+  if (key == '1'){
+    omega0-=0.05;
+  }
+  if (key == '2'){
+    omega0+=0.05;
+  }
+    if (key == '4'){
+    quality-=0.05;
+  }
+  if (key == '5'){
+    quality+=0.05;
+    quality = MAX(0.1, quality);
+  }
+  if (key == 'p'){
+    use_pass_filter = !(use_pass_filter);
+  }
+  if (key == 'r'){
+    omega0 = 0.1;
+    quality = 0.8;
+
+    x1_pass_filter = 0;
+    x2_pass_filter = 0;
+
+    y1_pass_filter = 0;
+    y2_pass_filter = 0;
   }
 }
 

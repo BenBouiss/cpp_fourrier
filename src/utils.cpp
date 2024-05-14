@@ -7,10 +7,10 @@
 std::vector<float> get_fourrier_transform_from_signal(std::vector<float> sound, int sampling_rate){
 	int N = sound.size();
 
-	std::vector<float> fourrier_vector(N);
+	std::vector<float> fourrier_vector(N); 
 
 	const std::complex<double>i (0.0, 1.0);
-	double pi = 3.14;
+	double pi = 3.14159265358979323846;
 
 	for (int k = 0; k < N; k++){
 		/* exp : std::exp(e) */
@@ -21,7 +21,9 @@ std::vector<float> get_fourrier_transform_from_signal(std::vector<float> sound, 
 			sum+=std::exp(- 2.0 *i*pi*(double)k*(double)n / (double)N)*(double)sound[n];
 		}
 		fourrier_vector[k] = std::norm(sum)*(1/std::sqrt(N));
-
+		if (k >= N/2){
+			return fourrier_vector;
+		}
 	}
 
 	return fourrier_vector;
@@ -29,12 +31,16 @@ std::vector<float> get_fourrier_transform_from_signal(std::vector<float> sound, 
 
 
 void print_array_float(std::vector<float> vect){
-	for (int i = 0; i < vect.size(); i++){
+	for (int i = 0; i < vect.size(); i++){ 
 		std::cout << vect[i] << " " ;
 	}
 	std::cout << "\n" << std::endl ;
 }
 
+void pause_program_execution(){
+	std::cout<<"Press ENTER to exit";
+    std::cin.ignore(std::cin.rdbuf()->in_avail()+1);
+}
 
 // Function that convert pitch into frequency. Pitch is equal to noctave * 12 + note
 // for example for A4 =
