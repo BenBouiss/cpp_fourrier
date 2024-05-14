@@ -87,8 +87,21 @@ void ofApp::draw() {
 
   ofSetColor(225);
   ofDrawBitmapString("AUDIO OUTPUT EXAMPLE", 32, 32);
-  ofDrawBitmapString(
-      "press 's' to unpause the audio\npress 'e' to pause the audio\npress 'p' to enable/disable pass filter\npress 'r' to reset the pass filter ", 31, 92);
+
+  // Draw WIKI
+
+  ofTranslate(32, 0, 0);
+  ofSetColor(225);
+
+  ofDrawBitmapString("WIKI", 986, 400);
+  ofSetLineWidth(1);
+  ofDrawRectangle(972, 375, 600, 370);
+
+  ofSetColor(245, 58, 135);
+  ofSetLineWidth(3);
+
+  ofDrawBitmapString("press '*' to UNPAUSE the audio\npress '/' to PAUSE the audio\npress 'p' to enable/disable pass filter\npress 'r' to reset the pass filter ", 
+      986, 418);
 
   ofNoFill();
 
@@ -122,8 +135,9 @@ void ofApp::draw() {
   ofTranslate(32, 150, 0);
 
   ofSetColor(225);
+  ofDrawBitmapString("Left Channel", 474, 18);
+
   ofSetLineWidth(1);
-  
   ofDrawRectangle(470, 0, 430, 200);
 
   ofSetColor(245, 58, 135);
@@ -152,7 +166,7 @@ if (!use_pass_filter){
 
   left_transform = get_fourrier_transform_from_signal(lAudio, sampleRate);
 }else{
-  ofDrawBitmapString("pass filter", 4, 18);
+  ofDrawBitmapString("Pass-filter", 4, 18);
   //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
   //                                    float & x1, float & x2, float quality, float omega0, bool use_recursive, bool low_filter, bool high_filter);
 
@@ -171,10 +185,10 @@ ofSetColor(245, 58, 135);
 ofSetLineWidth(3);
 
 ofBeginShape();
-float max_val = *std::max_element(left_transform.begin(), left_transform.end()); 
+float max_val_left = *std::max_element(left_transform.begin(), left_transform.end()); 
 for (unsigned int i = 0; i < lAudio.size(); i++) {
   float x = ofMap(i, 0, left_transform.size(), 0, 430, true);
-  float y = ofMap(left_transform[i], 0, max_val, 0, 200, true);
+  float y = ofMap(left_transform[i], 0, max_val_left, 0, 200, true);
   //ofVertex(x, 200 - left_transform[i]);
   ofVertex(x, 200 - y);
 }
@@ -195,7 +209,7 @@ if (!use_pass_filter){
 
   right_transform = get_fourrier_transform_from_signal(rAudio, sampleRate);
 }else{
-  ofDrawBitmapString("pass filter",474, 18);
+  ofDrawBitmapString("Pass-filter",474, 18);
   //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
   //                                    float & x1, float & x2, float quality, float omega0, bool use_recursive, bool low_filter, bool high_filter);
 
@@ -213,10 +227,10 @@ ofSetColor(245, 58, 135);
 ofSetLineWidth(3);
 
 ofBeginShape();
-float max_val = *std::max_element(right_transform.begin(), right_transform.end()); 
+float max_val_right = *std::max_element(right_transform.begin(), right_transform.end()); 
 for (unsigned int i = 0; i < rAudio.size(); i++) {
   float x = ofMap(i, 0, right_transform.size(), 470, 900, true);
-  float y = ofMap(right_transform[i], 0, max_val, 0, 200, true);
+  float y = ofMap(right_transform[i], 0, max_val_right, 0, 200, true);
   ofVertex(x, 200 - y);
 }
 ofEndShape(false);
@@ -232,7 +246,7 @@ ofSetColor(225);
 ofDrawBitmapString("Report", 954, 168);
 
 ofSetLineWidth(1);
-ofDrawRectangle(940, 150, 600, 425);
+ofDrawRectangle(940, 150, 600, 200);
 
 ofSetColor(245, 58, 135);
 ofSetLineWidth(3);
@@ -262,7 +276,7 @@ float keyWidth = 900 / numKeys;
 // WHITE keys
 ofSetColor(225);
 for(int i = 0; i < numKeys; i++) {
-    ofDrawRectangle(i * keyWidth, ofGetHeight() - 300, keyWidth, 100);
+    ofDrawRectangle(i * keyWidth, ofGetHeight() - 400, keyWidth, 100);
 }
 
 // BLACK keys
@@ -270,7 +284,7 @@ ofSetColor(0);
 for(int i = 0; i < numKeys; i++) {
     if(i != 2 && i != 6) { 
         float x = i * keyWidth + keyWidth * 0.65;
-        ofDrawRectangle(x, ofGetHeight() - 300, keyWidth * 0.7, 60);
+        ofDrawRectangle(x, ofGetHeight() - 400, keyWidth * 0.7, 60);
     }
 }
 
@@ -288,8 +302,8 @@ for(int i = 0; i < numKeys; i++) {
         case 5: label = "A"; keyboard_label = "h"; break;
         case 6: label = "B"; keyboard_label = "j"; break;
     }
-    ofDrawBitmapString(label, i * keyWidth + keyWidth * 0.5, ofGetHeight() - 280);
-    ofDrawBitmapString(keyboard_label, i * keyWidth + keyWidth * 0.5, ofGetHeight() - 210);
+    ofDrawBitmapString(label, i * keyWidth + keyWidth * 0.5, ofGetHeight() - 380);
+    ofDrawBitmapString(keyboard_label, i * keyWidth + keyWidth * 0.5, ofGetHeight() - 310);
 
 }
 }
@@ -305,11 +319,11 @@ void ofApp::keyPressed(int key) {
     volume = MIN(volume, 1);
   }
 
-  if (key == 's') {
+  if (key == '*') {
     soundStream.start();
   }
 
-  if (key == 'e') {
+  if (key == '/') {
     soundStream.stop();
   }
   if (key == '1'){
