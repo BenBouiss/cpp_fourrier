@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "utils.h"
+#include "sound_generation.h"
 
 class ofApp : public ofBaseApp{
 
@@ -41,4 +42,16 @@ class ofApp : public ofBaseApp{
 		float 	phase;
 		float 	phaseAdder;
 		float 	phaseAdderTarget;
+
+		//-------------------- Substractive synth stuff
+		bool use_pass_filter;
+
+		float omega0;
+		float quality;
+
+		float x1_pass_filter;
+		float x2_pass_filter;
+
+		float y1_pass_filter;
+		float y2_pass_filter;
 };
