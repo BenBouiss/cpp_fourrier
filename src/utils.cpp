@@ -7,10 +7,10 @@
 std::vector<float> get_fourrier_transform_from_signal(std::vector<float> sound, int sampling_rate){
 	int N = sound.size();
 
-	std::vector<float> fourrier_vector(N);
+	std::vector<float> fourrier_vector(N); 
 
 	const std::complex<double>i (0.0, 1.0);
-	double pi = 3.14;
+	double pi = 3.14159265358979323846;
 
 	for (int k = 0; k < N; k++){
 		/* exp : std::exp(e) */
@@ -29,9 +29,8 @@ std::vector<float> get_fourrier_transform_from_signal(std::vector<float> sound, 
 
 
 void print_array_float(std::vector<float> vect){
-	for (int i = 0; i < vect.size(); i++){
+	for (int i = 0; i < vect.size(); i++){ 
 		std::cout << vect[i] << " " ;
 	}
 	std::cout << "\n" << std::endl ;
-}
-
+} 
