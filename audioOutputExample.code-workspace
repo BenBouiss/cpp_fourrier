@@ -93,6 +93,13 @@
 			"regex": "cpp",
 			"future": "cpp",
 			"shared_mutex": "cpp"
-		}
+		},
+		"makefile.launchConfigurations": [
+			{
+				"cwd": "/home/sylvia.lehmann@Digital-Grenoble.local/of/examples/sound/cpp_fourrier/bin",
+				"binaryPath": "/home/sylvia.lehmann@Digital-Grenoble.local/of/examples/sound/cpp_fourrier/bin/cpp_fourrier",
+				"binaryArgs": []
+			}
+		]
 	}
 }
