@@ -1,4 +1,3 @@
-#ifndef SOUND_GEN_H
 #include "cmath"
 #include "complex"
 #include <math.h>

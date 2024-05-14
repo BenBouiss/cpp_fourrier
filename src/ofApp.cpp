@@ -1,6 +1,8 @@
 #include "ofApp.h"
 #include "utils.h"
 #include "sound_generation.h"
+
+#include "sound_generation.h"
 //--------------------------------------------------------------
 void ofApp::setup() {
 
@@ -27,11 +29,22 @@ void ofApp::setup() {
 
   lAudio.assign(bufferSize, 0.0);
   rAudio.assign(bufferSize, 0.0);
+  //carre.assign(bufferSize, 0.0);
 
   soundStream.printDeviceList();
  
  
   ofSoundStreamSettings settings;
+
+  //++++
+  f=440;
+  op=2;
+  scintillance=40;
+ 
+  
+  //int scintillance=20;
+
+ // float f=440.0;
 
   // if you want to set the device id to be different than the default:
   //
@@ -405,7 +418,7 @@ void ofApp::mouseExited(int x, int y) {}
 void ofApp::windowResized(int w, int h) {}
 
 //--------------------------------------------------------------
-void ofApp::audioOut(ofSoundBuffer &buffer) {
+/*void ofApp::audioOut(ofSoundBuffer &buffer) {
   // pan = 0.5f;
   float leftScale = 1 - pan;
   float rightScale = pan;
