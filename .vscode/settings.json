@@ -76,14 +76,7 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
-    },
-    "C_Cpp.errorSquiggles": "disabled",
-    "makefile.launchConfigurations": [
-        {
-            "cwd": "/home/sylvia.lehmann@Digital-Grenoble.local/of/examples/sound/cpp_fourrier/bin",
-            "binaryPath": "/home/sylvia.lehmann@Digital-Grenoble.local/of/examples/sound/cpp_fourrier/bin/cpp_fourrier",
-            "binaryArgs": []
-        }
-    ]
+        "variant": "cpp",
+        "*.ipp": "cpp"
+    }
 }
