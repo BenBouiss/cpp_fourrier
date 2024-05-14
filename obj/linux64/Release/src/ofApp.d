@@ -1,6 +1,6 @@
 obj/linux64/Release/src/ofApp.o: \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/examples/sound/cpp_fourrier/src/ofApp.cpp \
- /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/examples/sound/cpp_fourrier/src/ofApp.h \
+ /home/benjamin.bouissou@Digital-Gretestnoble.local/Documents/of_v0.12.0_linux64gcc6_release/examples/sound/cpp_fourrier/src/ofApp.h \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/ofMain.h \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/utils/ofConstants.h \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/tess2/include/tesselator.h \
@@ -271,7 +271,7 @@ obj/linux64/Release/src/ofApp.o: \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/gl/ofTexture.h \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/gl/ofGLBaseTypes.h \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/gl/ofGLRenderer.h \
- /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/graphics/ofPolyline.h \
+ /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/testgraphics/ofPolyline.h \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/graphics/ofPolyline.inl \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/app/ofAppRunner.h \
  /home/benjamin.bouissou@Digital-Grenoble.local/Documents/of_v0.12.0_linux64gcc6_release/libs/openFrameworks/app/ofWindowSettings.h \
