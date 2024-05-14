@@ -29,7 +29,8 @@ void ofApp::setup() {
   rAudio.assign(bufferSize, 0.0);
 
   soundStream.printDeviceList();
-
+ 
+ 
   ofSoundStreamSettings settings;
 
   // if you want to set the device id to be different than the default:
@@ -69,6 +70,8 @@ void ofApp::setup() {
   settings.numInputChannels = 0;
   settings.bufferSize = bufferSize;
   soundStream.setup(settings);
+  // stop added no sound at beginning
+  soundStream.stop();
 
   // on OSX: if you want to use ofSoundPlayer together with ofSoundStream you
   // need to synchronize buffersizes. use ofFmodSetBuffersize(bufferSize) to set
@@ -79,6 +82,7 @@ void ofApp::setup() {
 void ofApp::update() {}
 
 //--------------------------------------------------------------
+
 void ofApp::draw() {
 
   ofSetColor(225);
