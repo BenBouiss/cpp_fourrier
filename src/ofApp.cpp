@@ -164,17 +164,17 @@ if (!use_pass_filter){
 
 
 ofSetLineWidth(1);
-ofDrawRectangle(0, 0, 430, 200);
+ofDrawRectangle(470, 0, 430, 200);
 
 
 ofSetColor(245, 58, 135);
 ofSetLineWidth(3);
 
 ofBeginShape();
-
+float max_val = *std::max_element(left_transform.begin(), left_transform.end()); 
 for (unsigned int i = 0; i < lAudio.size(); i++) {
-  float x = ofMap(i, 0, left_transform.size(), 470, 900, true);
-  float y = ofMap(left_transform[i], 0, left_transform.size(), 0, 200, true);
+  float x = ofMap(i, 0, left_transform.size(), 0, 430, true);
+  float y = ofMap(left_transform[i], 0, max_val, 0, 200, true);
   //ofVertex(x, 200 - left_transform[i]);
   ofVertex(x, 200 - y);
 }
@@ -204,10 +204,10 @@ if (!use_pass_filter){
                         y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, true);
   
 }
-std::vector<float> right_transform = get_fourrier_transform_from_signal(rAudio, sampleRate);
+
 print_array_float(rAudio);
 ofSetLineWidth(1);
-ofDrawRectangle(470, 0, 430, 200);
+ofDrawRectangle(0, 0, 430, 200);
 
 ofSetColor(245, 58, 135);
 ofSetLineWidth(3);
@@ -215,8 +215,8 @@ ofSetLineWidth(3);
 ofBeginShape();
 float max_val = *std::max_element(right_transform.begin(), right_transform.end()); 
 for (unsigned int i = 0; i < rAudio.size(); i++) {
-  float x = ofMap(i, 0, right_transform.size(), 0, 430, true);
-  float y = ofMap(right_transform[i], 0, rAudio.size(), 0, 200, true);
+  float x = ofMap(i, 0, right_transform.size(), 470, 900, true);
+  float y = ofMap(right_transform[i], 0, max_val, 0, 200, true);
   ofVertex(x, 200 - y);
 }
 ofEndShape(false);
