@@ -1,5 +1,6 @@
 #include "ofApp.h"
 #include "utils.h"
+#include "sound_generation.h"
 //--------------------------------------------------------------
 void ofApp::setup() {
 
@@ -12,6 +13,17 @@ void ofApp::setup() {
   phaseAdderTarget = 0.0f;
   volume = 0.1f;
   bNoise = false;
+
+  use_pass_filter = false;
+
+	omega0 = 0.1;
+  quality = 0.8;
+
+	x1_pass_filter = 0;
+	x2_pass_filter = 0;
+
+	y1_pass_filter = 0;
+	y2_pass_filter = 0;
 
   lAudio.assign(bufferSize, 0.0);
   rAudio.assign(bufferSize, 0.0);
@@ -72,7 +84,7 @@ void ofApp::draw() {
   ofSetColor(225);
   ofDrawBitmapString("AUDIO OUTPUT EXAMPLE", 32, 32);
   ofDrawBitmapString(
-      "press '/' to unpause the audio\npress 'e' to pause the audio", 31, 92);
+      "press 's' to unpause the audio\npress 'e' to pause the audio\npress 'p' to enable/disable pass filter\npress 'r' to reset the pass filter ", 31, 92);
 
   ofNoFill();
 
@@ -106,8 +118,21 @@ void ofApp::draw() {
   ofTranslate(32, 150, 0);
 
   ofSetColor(225);
-  ofDrawBitmapString("Right Channel", 474, 18);
+  std::vector<float> test_var;
+  if (!use_pass_filter){
+    ofDrawBitmapString("Fourrier transform", 4, 18);
 
+    test_var = get_fourrier_transform_from_signal(rAudio, sampleRate);
+  }else{
+    ofDrawBitmapString("pass filter", 4, 18);
+    //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
+    //                                    float & x1, float & x2, float quality, float omega0, bool use_recursive, bool low_filter, bool high_filter);
+
+    
+    test_var = soustractive_synthese(rAudio, 2, rAudio.size(), 
+                          y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, true);
+    
+  }
   ofSetLineWidth(1);
   ofDrawRectangle(470, 0, 430, 200);
 
@@ -194,10 +219,15 @@ string reportString = "volume: (" + ofToString(volume, 2) +
                       ") modify with mouse x\nsynthesis: ";
 if (!bNoise) {
   reportString += "sine wave (" + ofToString(targetFrequency, 2) +
-                  "hz) modify with mouse y";
+                  "hz) modify with mouse y\n";
 } else {
   reportString += "noise";
 }
+  if (use_pass_filter){
+    reportString += "omega_0: (" + ofToString(omega0, 2) + 
+                    ") modify with 1/2 keys\nquality: (" + ofToString(quality, 2) +
+                    "modify with 4/5 keys";
+  }
 ofDrawBitmapString(reportString, 954, 200);
 
 // PIANO
@@ -258,6 +288,32 @@ void ofApp::keyPressed(int key) {
 
   if (key == 'e') {
     soundStream.stop();
+  }
+  if (key == '1'){
+    omega0-=0.05;
+  }
+  if (key == '2'){
+    omega0+=0.05;
+  }
+    if (key == '4'){
+    quality-=0.05;
+  }
+  if (key == '5'){
+    quality+=0.05;
+    quality = MAX(0.1, quality);
+  }
+  if (key == 'p'){
+    use_pass_filter = !(use_pass_filter);
+  }
+  if (key == 'r'){
+    omega0 = 0.1;
+    quality = 0.8;
+
+    x1_pass_filter = 0;
+    x2_pass_filter = 0;
+
+    y1_pass_filter = 0;
+    y2_pass_filter = 0;
   }
 }
 
