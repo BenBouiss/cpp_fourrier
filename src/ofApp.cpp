@@ -122,8 +122,9 @@ void ofApp::draw() {
   ofTranslate(32, 150, 0);
 
   ofSetColor(225);
+  ofDrawBitmapString("Right Channel", 474, 18);
+
   ofSetLineWidth(1);
-  
   ofDrawRectangle(470, 0, 430, 200);
 
   ofSetColor(245, 58, 135);
@@ -140,89 +141,80 @@ void ofApp::draw() {
   ofPopStyle();
 
 // Draw FOURRIER LEFT channel:
-ofPushStyle();
-ofPushMatrix();
-ofTranslate(32, 375, 0);
+    ofPushStyle();
+    ofPushMatrix();
+    ofTranslate(32, 375, 0);
 
-ofSetColor(225);
+    std::vector<float> test_var;
 
-std::vector<float> left_transform; 
-if (!use_pass_filter){
-  ofDrawBitmapString("Fourier transform (Left channel)", 4, 18);
+    if (!use_pass_filter) {
+        ofSetColor(225);
+        ofDrawBitmapString("Fourier transform (Left Channel)", 4, 18);
+        test_var = get_fourrier_transform_from_signal(lAudio, sampleRate);
+    } else {
+        ofSetColor(225);
+        ofDrawBitmapString("Pass Filter (Left Channel)", 4, 18);
+        test_var = soustractive_synthese(lAudio, 2, lAudio.size(), 
+                                          y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, 
+                                          quality, omega0, true, true, true);
+    }
 
-  left_transform = get_fourrier_transform_from_signal(lAudio, sampleRate);
-}else{
-  ofDrawBitmapString("pass filter", 4, 18);
-  //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
-  //                                    float & x1, float & x2, float quality, float omega0, bool use_recursive, bool low_filter, bool high_filter);
+    ofSetLineWidth(1);
+    ofDrawRectangle(0, 0, 430, 200);
 
-  
-  left_transform = soustractive_synthese(lAudio, 2, lAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, true);
-  
-}
+    ofSetColor(245, 58, 135);
+    ofSetLineWidth(3);
+
+    ofBeginShape();
+    for (unsigned int i = 0; i < lAudio.size(); i++) {
+        float x = ofMap(i, 0, test_var.size(), 0, 430 , true);
+        float y = 200 - test_var[i];
+        x = ofClamp(x, 0, 430);
+        y = ofClamp(y, 0, 200); 
+        ofVertex(x, 200 - test_var[i]);
+    }
+    ofEndShape(false);
+
+    ofPopMatrix();
+    ofPopStyle();
 
 
-ofSetLineWidth(1);
-ofDrawRectangle(470, 0, 430, 200);
+    // Draw FOURRIER RIGHT channel:
+    ofPushStyle();
+    ofPushMatrix();
+    ofTranslate(32, 375, 0);
 
+    if (!use_pass_filter) {
+        ofSetColor(225);
+        ofDrawBitmapString("Fourier transform (Right Channel)", 474, 18);
+        test_var = get_fourrier_transform_from_signal(rAudio, sampleRate);
+    } else {
+        ofSetColor(225);
+        ofDrawBitmapString("Pass Filter (Right Channel)", 474, 18);
+        test_var = soustractive_synthese(rAudio, 2, rAudio.size(), 
+                                          y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, 
+                                          quality, omega0, true, true, true);
+    }
 
-ofSetColor(245, 58, 135);
-ofSetLineWidth(3);
+    ofSetLineWidth(1);
+    ofDrawRectangle(470, 0, 430, 200);
 
-ofBeginShape();
-float max_val = *std::max_element(left_transform.begin(), left_transform.end()); 
-for (unsigned int i = 0; i < lAudio.size(); i++) {
-  float x = ofMap(i, 0, left_transform.size(), 0, 430, true);
-  float y = ofMap(left_transform[i], 0, max_val, 0, 200, true);
-  //ofVertex(x, 200 - left_transform[i]);
-  ofVertex(x, 200 - y);
-}
-ofEndShape(false);
+    ofSetColor(245, 58, 135);
+    ofSetLineWidth(3);
 
-ofPopMatrix();
-ofPopStyle();
+    ofBeginShape();
+    for (unsigned int i = 0; i < rAudio.size(); i++) {
+        float x = ofMap(i, 0, test_var.size(), 470, 900, true);
+        float y = 200 - test_var[i];
+        x = ofClamp(x, 470, 900);
+        y = ofClamp(y, 0, 200); 
+        ofVertex(x, 200 - test_var[i]);
+    }
+    ofEndShape(false);
 
-// Draw FOURRIER RIGHT channel:
-ofPushStyle();
-ofPushMatrix();
-ofTranslate(32, 375, 0);
+    ofPopMatrix();
+    ofPopStyle();
 
-ofSetColor(225);
-std::vector<float> right_transform;
-if (!use_pass_filter){
-  ofDrawBitmapString("Fourier transform (Right Channel)", 474, 18);
-
-  right_transform = get_fourrier_transform_from_signal(rAudio, sampleRate);
-}else{
-  ofDrawBitmapString("pass filter",474, 18);
-  //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
-  //                                    float & x1, float & x2, float quality, float omega0, bool use_recursive, bool low_filter, bool high_filter);
-
-  
-  right_transform = soustractive_synthese(rAudio, 2, rAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, true);
-  
-}
-
-print_array_float(rAudio);
-ofSetLineWidth(1);
-ofDrawRectangle(0, 0, 430, 200);
-
-ofSetColor(245, 58, 135);
-ofSetLineWidth(3);
-
-ofBeginShape();
-float max_val = *std::max_element(right_transform.begin(), right_transform.end()); 
-for (unsigned int i = 0; i < rAudio.size(); i++) {
-  float x = ofMap(i, 0, right_transform.size(), 470, 900, true);
-  float y = ofMap(right_transform[i], 0, max_val, 0, 200, true);
-  ofVertex(x, 200 - y);
-}
-ofEndShape(false);
-
-ofPopMatrix();
-ofPopStyle();
 
 // Draw report string
 
