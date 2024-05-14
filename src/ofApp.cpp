@@ -171,7 +171,10 @@ ofSetLineWidth(3);
 
 ofBeginShape();
 for (unsigned int i = 0; i < lAudio.size(); i++) {
-  float x = ofMap(i, 0, left_transform.size(), 470, 900, true);
+  float x = ofMap(i, 0, left_transform.size(), 50, 430 , true);
+  float y = 200 - left_transform[i];
+  x = ofClamp(x, 0, 430);
+  y = ofClamp(y, 0, 200); 
   ofVertex(x, 200 - left_transform[i]);
 }
 ofEndShape(false);
@@ -197,7 +200,10 @@ ofSetLineWidth(3);
 
 ofBeginShape();
 for (unsigned int i = 0; i < rAudio.size(); i++) {
-  float x = ofMap(i, 0, right_transform.size(), 50, 430, true);
+  float x = ofMap(i, 0, right_transform.size(), 470, 900, true);
+  float y = 200 - right_transform[i];
+  x = ofClamp(x, 470, 900);
+  y = ofClamp(y, 0, 200); 
   ofVertex(x, 200 - right_transform[i]);
 }
 ofEndShape(false);
