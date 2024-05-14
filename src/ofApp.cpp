@@ -265,7 +265,7 @@ if (!bNoise) {
                     ") modify with 1/2 keys\nquality: (" + ofToString(quality, 2) +
                     "modify with 4/5 keys";
   }
-ofDrawBitmapString(reportString, 954, 200);
+ofDrawBitmapString(reportString, 954, 200);| 
 
 // PIANO
 
@@ -352,6 +352,22 @@ void ofApp::keyPressed(int key) {
     y1_pass_filter = 0;
     y2_pass_filter = 0;
   }
+  // PIANO keys and corresponding notes
+  if (key == 'q'){note = 0;}
+  if (key == 'z'){note = 1;}
+  if (key == 's'){note = 2;}
+  if (key == 'e'){note= 3;}
+  if (key == 'd') {note = 4;} 
+  if (key == 'f') {note = 5;}
+  if (key == 't') {note = 6;}
+  if (key == 'g') {note = 7;}
+  if (key == 'y') {note = 8;}
+  if (key == 'h') {note = 9;}
+  if (key == 'u') {note = 10;}
+  if (key == 'j') {note = 11;}
+
+
+
 }
 
 //--------------------------------------------------------------
@@ -419,6 +435,9 @@ void ofApp::audioOut(ofSoundBuffer &buffer) {
           sample * volume * rightScale;
     }
   }
+
+
+  
 }
 
 //--------------------------------------------------------------
@@ -426,3 +445,11 @@ void ofApp::gotMessage(ofMessage msg) {}
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {}
+
+
+//--------------------------------------------------------------
+int keytopitch(int key, int  baseoctave, int note) {
+
+  return baseoctave * 12 + note;
+
+}

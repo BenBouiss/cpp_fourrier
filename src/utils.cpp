@@ -2,8 +2,9 @@
 #include "complex"
 #include <math.h>
 #include <vector>
-
 #include <iostream>
+using namespace std;
+
 std::vector<float> get_fourrier_transform_from_signal(std::vector<float> sound, int sampling_rate){
 	int N = sound.size();
 
@@ -43,9 +44,7 @@ void pause_program_execution(){
 }
 
 // Function that convert pitch into frequency. Pitch is equal to noctave * 12 + note
-// for example for A4 =
-/*
-float pitchToFrequency(int pitch, float A4frequency = 440.f, int A4pitch = 57){
+
+float pitchToFrequency(int pitch, float A4frequency = 440.f, int A4pitch = 69){
 	return A4frequency * pow(2, ((pitch - A4pitch) / 12.f));
 }
-*/
