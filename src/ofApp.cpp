@@ -373,7 +373,7 @@ for(int i = 0; i < numKeys; i++) {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-  std::cout << key << std::endl;
+  //std::cout << key << std::endl;
   if (key == '-' || key == '_') {
     volume -= 0.05;
     volume = MAX(volume, 0);
@@ -630,11 +630,11 @@ void ofApp::audioOut(ofSoundBuffer &buffer) {
         rAudio[i] = buffer[i * buffer.getNumChannels()+1] =sample * volume * leftScale;
       }else{
         std::vector<float> new_audio;
-
+        lAudio[i] = sample * volume * leftScale;
         new_audio = soustractive_synthese(lAudio, 2, lAudio.size(), 
                       y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, use_LPF, use_HPF);
-        lAudio[i] = buffer[i * buffer.getNumChannels()] = sample * volume * leftScale;
-        rAudio[i] = buffer[i * buffer.getNumChannels()+1] =sample * volume * leftScale;
+        buffer[i * buffer.getNumChannels()] = new_audio[i];
+        buffer[i * buffer.getNumChannels()+1] = new_audio[i];
       }
       /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
           sample * volume * rightScale;*/
