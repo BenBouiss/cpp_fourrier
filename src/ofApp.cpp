@@ -23,6 +23,7 @@ void ofApp::setup() {
 
   current_filter = 0;
   listen_pass = false;
+
   use_LPF=false;
   use_HPF=false;
 
@@ -124,26 +125,8 @@ void ofApp::draw() {
   ofSetColor(245, 58, 135);
   ofSetLineWidth(3);
 
-  // SYSTEM BUTTONS WIKI
-  ofDrawBitmapString("press '*' to UNPAUSE the audio", 986, 420);
-  ofDrawBitmapString("press '/' to PAUSE the audio", 986, 430);
-  ofDrawBitmapString("press 'p' to enable/disable pass filter", 986, 440);
-  ofDrawBitmapString("press 'o' to reset the pass filter", 986, 450);
-  ofDrawBitmapString("-------------------------------------", 986, 460);
-  // PIANO BUTTONS WIKI
-
-  ofDrawBitmapString("press 'q' to play note C", 986, 480);
-  ofDrawBitmapString("press 'z' to play note C#", 986, 490);
-  ofDrawBitmapString("press 's' to play note D", 986, 500);
-  ofDrawBitmapString("press 'e' to play note D#", 986, 510);
-  ofDrawBitmapString("press 'd' to play note E", 986, 520);
-  ofDrawBitmapString("press 'f' to play note F", 986, 530);
-  ofDrawBitmapString("press 't' to play note F#", 986, 540);
-  ofDrawBitmapString("press 'g' to play note G", 986, 550);
-  ofDrawBitmapString("press 'y' to play note G#", 986, 560);
-  ofDrawBitmapString("press 'h' to play note A", 986, 570);
-  ofDrawBitmapString("press 'u' to play note A#", 986, 580);
-  ofDrawBitmapString("press 'j' to play note B", 986, 590);
+  ofDrawBitmapString("press '*' to UNPAUSE the audio\npress '/' to PAUSE the audio\npress 'p' to enable/disable pass filter\npress 'r' to reset the pass filter ", 
+      986, 418);
 
   ofNoFill();
 
@@ -279,6 +262,9 @@ std::vector<float> right_transform_fourier;
 right_transform_fourier = get_fourier_transform_from_signal(right_transform, sampleRate);
   
 
+right_transform = soustractive_synthese(rAudio, 2, rAudio.size(), 
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, use_LPF, use_HPF);
+
 //print_array_float(rAudio);
 ofSetLineWidth(1);
 ofDrawRectangle(0, 0, 430, 200);
@@ -313,8 +299,7 @@ ofSetLineWidth(3);
 
 string reportString = "volume: (" + ofToString(volume, 2) +
                       ") modify with -/+ keys\npan: (" + ofToString(pan, 2) +
-                      ") modify with mouse x\nbrillance: (" + ofToString(brillance, 2) +
-                      ") modify with m/n keys\nsynthesis: (";
+                      ") modify with mouse x\nsynthesis: ";
 if (!bNoise) {
   reportString += "sine wave (" + ofToString(frequence_pitch, 2) +
                   "hz) modify with mouse y\n";
@@ -322,7 +307,7 @@ if (!bNoise) {
   reportString += "noise";
 }
 
-  reportString += "omega_0: (" + ofToString(omega0, 2) + 
+reportString += "omega_0: (" + ofToString(omega0, 2) + 
                   ") modify with 1/ctrl+1 keys\nquality: (" + ofToString(quality, 2) +
                   "modify with 4/ctrl+4 keys\nFilter configuration: LPF:" + 
                   ofToString(use_LPF) + " HPF: " + ofToString(use_HPF) + "modify with 3";
@@ -374,6 +359,7 @@ for(int i = 0; i < numKeys; i++) {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
   //std::cout << key << std::endl;
+
   if (key == '-' || key == '_') {
     volume -= 0.05;
     volume = MAX(volume, 0);
@@ -449,6 +435,7 @@ if (key == 'm'){
   if (key == '5'){
     listen_pass = true;
   }
+
   if (key == '3'){
     current_filter+=1;
     int id = current_filter%4;
@@ -465,17 +452,10 @@ if (key == 'm'){
   if (key == 'p'){
     use_pass_filter = !(use_pass_filter);
   }
-  if (key == 'o'){
+  if (key == 'r'){
     omega0 = 0.1;
     quality = 0.8;
-  if (key == 'm'){
-    brillance+=1;
-  }
-  if (key == 'n'){
-    if (brillance > 0){
-      brillance-=1;
-    }
-  }
+
   reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   // PIANO keys and corresponding notes
@@ -507,9 +487,11 @@ void ofApp::keyReleased(int key) {
   if (key == 3682){
     keyboard_ctrl_modifier = false;
   }
+
   if (key == '5'){
     listen_pass = false;
   }
+
 }
 
 //--------------------------------------------------------------

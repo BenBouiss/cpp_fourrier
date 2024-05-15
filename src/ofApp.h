@@ -31,7 +31,7 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 
-		void keyPressed (int key);
+		void keyPressed  (int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
 		void mouseDragged(int x, int y, int button);
@@ -86,7 +86,6 @@ class ofApp : public ofBaseApp{
 		float y2_pass_filter;
 		float getFrequencyForKey(int key);
 
-
 		//---------- for calculate frequency from keyboard input and note
 		int octave;
 		int note;
@@ -98,5 +97,4 @@ class ofApp : public ofBaseApp{
 		float f;
 		int brillance;
 		std::string name_wave;
-
 };
