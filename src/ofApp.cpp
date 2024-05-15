@@ -284,7 +284,8 @@ ofSetLineWidth(3);
 
 string reportString = "volume: (" + ofToString(volume, 2) +
                       ") modify with -/+ keys\npan: (" + ofToString(pan, 2) +
-                      ") modify with mouse x\nsynthesis: ";
+                      ") modify with mouse x\nbrillance: (" + ofToString(brillance, 2) +
+                      ") modify with m/n keys\nsynthesis: (";
 if (!bNoise) {
   reportString += "sine wave (" + ofToString(targetFrequency, 2) +
                   "hz) modify with mouse y\n";
@@ -380,24 +381,34 @@ void ofApp::keyPressed(int key) {
   if (key == 'o'){
     omega0 = 0.1;
     quality = 0.8;
-
+  if (key == 'm'){
+    brillance+=1;
+  }
+  if (key == 'n'){
+    if (brillance > 0){
+      brillance-=1;
+    }
+  }
   reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   // PIANO keys and corresponding notes
-  if (key == 'q'){note = 0;}
-  if (key == 'z'){note = 1;}
-  if (key == 's'){note = 2;}
-  if (key == 'e'){note= 3;}
-  if (key == 'd') {note = 4;} 
-  if (key == 'f') {note = 5;}
-  if (key == 't') {note = 6;}
-  if (key == 'g') {note = 7;}
-  if (key == 'y') {note = 8;}
-  if (key == 'h') {note = 9;}
-  if (key == 'u') {note = 10;}
-  if (key == 'j') {note = 11;}
-
-
+  float getFrequencyForKey(int key) {
+    switch (key) {
+        case 'q': return 261.63; // C4
+        case 'z': return 277.18; // C#4
+        case 's': return 293.66; // D4
+        case 'e': return 311.13; // D#4
+        case 'd': return 329.63; // E4
+        case 'f': return 349.23; // F4
+        case 't': return 369.99; // F#4
+        case 'g': return 392.00; // G4
+        case 'y': return 415.30; // G#4
+        case 'h': return 440.00; // A4
+        case 'u': return 466.16; // A#4
+        case 'j': return 493.88; // B4
+        default: return 0.0f; // no frequency for unrecognized key
+    }
+}
 
 }
 
