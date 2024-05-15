@@ -310,7 +310,8 @@ if (!bNoise) {
 reportString += "omega_0: (" + ofToString(omega0, 2) + 
                   ") modify with 1/ctrl+1 keys\nquality: (" + ofToString(quality, 2) +
                   "modify with 4/ctrl+4 keys\nFilter configuration: LPF:" + 
-                  ofToString(use_LPF) + " HPF: " + ofToString(use_HPF) + "modify with 3";
+                  ofToString(use_LPF) + " HPF: " + ofToString(use_HPF) + " modify with 3\n"+
+                  "Octave: " + ofToString(octave) + " modify with 2/ctrl+2" ;
 
 ofDrawBitmapString(reportString, 954, 200);
 
@@ -413,7 +414,7 @@ if (key == 'm'){
     reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
     if (key == '2'){
-      std::cout << "Changing octave" << std::endl;
+      //std::cout << "Changing octave" << std::endl;
       if (keyboard_ctrl_modifier){
         octave-=1;
       }else{
@@ -476,7 +477,7 @@ if (key == 'm'){
 
   frequence_pitch = keytofrequency(octave, note, pitch, A4frequency, A4pitch);
   phaseAdderTarget = (frequence_pitch / (float)sampleRate) * TWO_PI;
-  std::cout << frequence_pitch << std::endl;
+  //std::cout << frequence_pitch << std::endl;
 
 }
 
@@ -613,6 +614,7 @@ void ofApp::audioOut(ofSoundBuffer &buffer) {
       }else{
         std::vector<float> new_audio;
         lAudio[i] = sample * volume * leftScale;
+        y1_pass_filter= 0.0, y2_pass_filter= 0.0, x1_pass_filter= 0.0, x2_pass_filter = 0.0;
         new_audio = soustractive_synthese(lAudio, 2, lAudio.size(), 
                       y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, use_LPF, use_HPF);
         buffer[i * buffer.getNumChannels()] = new_audio[i];
