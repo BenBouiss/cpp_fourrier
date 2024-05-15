@@ -1,6 +1,8 @@
 #include "ofApp.h"
 #include "utils.h"
 #include "sound_generation.h"
+
+#include "sound_generation.h"
 //--------------------------------------------------------------
 void ofApp::setup() {
 
@@ -13,11 +15,15 @@ void ofApp::setup() {
   phaseAdderTarget = 0.0f;
   volume = 0.1f;
   bNoise = false;
-
+  keyboard_ctrl_modifier = false;
   use_pass_filter = false;
 
 	omega0 = 0.1;
   quality = 0.8;
+
+  current_filter = 0;
+  use_LPF=false;
+  use_HPF=false;
 
 	x1_pass_filter = 0;
 	x2_pass_filter = 0;
@@ -27,11 +33,22 @@ void ofApp::setup() {
 
   lAudio.assign(bufferSize, 0.0);
   rAudio.assign(bufferSize, 0.0);
+  //carre.assign(bufferSize, 0.0);
 
   soundStream.printDeviceList();
  
- 
+  
   ofSoundStreamSettings settings;
+
+  //++++
+  f=440;
+  op=2;
+  brillance=40;
+ 
+  
+  //int scintillance=20;
+
+ // float f=440.0;
 
   // if you want to set the device id to be different than the default:
   //
@@ -135,7 +152,7 @@ void ofApp::draw() {
   ofTranslate(32, 150, 0);
 
   ofSetColor(225);
-  ofDrawBitmapString("Left Channel", 474, 18);
+  ofDrawBitmapString("Right Channel", 474, 18);
 
   ofSetLineWidth(1);
   ofDrawRectangle(470, 0, 430, 200);
@@ -172,7 +189,7 @@ if (!use_pass_filter){
 
   
   left_transform = soustractive_synthese(lAudio, 2, lAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, use_LPF, use_HPF);
   
 }
 
@@ -215,7 +232,7 @@ if (!use_pass_filter){
 
   
   right_transform = soustractive_synthese(rAudio, 2, rAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, use_LPF, use_HPF);
   
 }
 
@@ -262,8 +279,9 @@ if (!bNoise) {
 }
   if (use_pass_filter){
     reportString += "omega_0: (" + ofToString(omega0, 2) + 
-                    ") modify with 1/2 keys\nquality: (" + ofToString(quality, 2) +
-                    "modify with 4/5 keys";
+                    ") modify with 1/ctrl+1 keys\nquality: (" + ofToString(quality, 2) +
+                    "modify with 4/ctrl+4 keys\nFilter configuration: LPF:" + 
+                    ofToString(use_LPF) + " HPF: " + ofToString(use_HPF) + "modify with 3";
   }
 ofDrawBitmapString(reportString, 954, 200);
 
@@ -311,6 +329,7 @@ for(int i = 0; i < numKeys; i++) {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+  std::cout << key << std::endl;
   if (key == '-' || key == '_') {
     volume -= 0.05;
     volume = MAX(volume, 0);
@@ -322,26 +341,43 @@ void ofApp::keyPressed(int key) {
   if (key == '*') {
     soundStream.start();
   }
-
+  if (key == 3682){
+    keyboard_ctrl_modifier = true;
+  }
   if (key == '/') {
     soundStream.stop();
   }
   if (key == '1'){
-    omega0-=0.05;
+    if (keyboard_ctrl_modifier){
+      omega0-=0.05;
+    }else{
+      omega0+=0.05;
+    }
+    omega0 = MIN(PI, MAX(0, omega0));
     reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
-  if (key == '2'){
-    omega0+=0.05;
+  if (key == '4'){
+    if (keyboard_ctrl_modifier){
+      quality-=0.05;
+    }else{
+      quality+=0.05;
+    }
+    quality = MIN(1, MAX(0, quality));
     reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
-    if (key == '4'){
-    quality-=0.05;
-    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
-  }
-  if (key == '5'){
-    quality+=0.05;
-    quality = MAX(0.1, quality);
-    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
+
+  if (key == '3'){
+    current_filter+=1;
+    int id = current_filter%4;
+    if (id==0){
+      use_LPF = false; use_HPF=false;
+    }else if (id == 1){
+      use_LPF = true; use_HPF=false;
+    }else if(id == 2){
+      use_LPF = false; use_HPF=true;
+    }else{
+      use_LPF = true; use_HPF=true;
+    }
   }
   if (key == 'p'){
     use_pass_filter = !(use_pass_filter);
@@ -371,7 +407,11 @@ void ofApp::keyPressed(int key) {
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key) {}
+void ofApp::keyReleased(int key) {
+  if (key == 3682){
+    keyboard_ctrl_modifier = false;
+  }
+}
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
@@ -405,7 +445,7 @@ void ofApp::mouseExited(int x, int y) {}
 void ofApp::windowResized(int w, int h) {}
 
 //--------------------------------------------------------------
-void ofApp::audioOut(ofSoundBuffer &buffer) {
+/*void ofApp::audioOut(ofSoundBuffer &buffer) {
   // pan = 0.5f;
   float leftScale = 1 - pan;
   float rightScale = pan;
@@ -439,7 +479,7 @@ void ofApp::audioOut(ofSoundBuffer &buffer) {
 
   
 }
-
+*/
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg) {}
 
@@ -452,4 +492,59 @@ int keytopitch(int key, int  baseoctave, int note) {
 
   return baseoctave * 12 + note;
 
+}
+
+
+void ofApp::audioOut(ofSoundBuffer &buffer) {
+  // pan = 0.5f;
+  float leftScale = 1 - pan;
+  float rightScale = pan;
+  //+++
+  float somme;
+  float sample;
+
+  // sin (n) seems to have trouble when n is very large, so we
+  // keep phase in the range of 0-TWO_PI like this:
+  while (phase > TWO_PI) {
+    phase -= TWO_PI;
+  }
+
+  if (bNoise == true) {
+    // ---------------------- noise --------------
+    for (size_t i = 0; i < buffer.getNumFrames(); i++) {
+      lAudio[i] = buffer[i * buffer.getNumChannels()] =
+          ofRandom(0, 1) * volume * leftScale;
+      /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
+          ofRandom(0, 1) * volume * rightScale;*/
+    }
+  } else {
+    
+    phaseAdder = 0.95f * phaseAdder + 0.05f * phaseAdderTarget;
+    for (size_t i = 0; i < buffer.getNumFrames(); i++) {
+      phase += phaseAdder;
+
+      if (op==0){sample = sin(phase); }
+      //carré
+      else if (op==1){   
+        somme=0.0;
+        for (size_t k = 0; k < brillance; k++) {                     
+        somme=somme+4/PI*(sin((2*k+1)*phase))/(2*k+1);      
+        }   
+        sample = somme;
+      }
+      else {   //if (op==2)
+        somme=0.0;
+        for (size_t k = 1; k < brillance; k++) {
+          float sign = k % 2 == 0 ? 1.f : -1.f;                     
+          somme = somme + sign*(sin(k*phase)/k);   
+        }   
+        sample = (2/PI)*somme; 
+      }
+      lAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
+      rAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
+      /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
+          sample * volume * rightScale;*/
+    }
+  /*}*/
+}
 }

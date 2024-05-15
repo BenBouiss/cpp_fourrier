@@ -1,4 +1,3 @@
-#ifndef SOUND_GEN_H
 #include "cmath"
 #include "complex"
 #include <math.h>
@@ -18,4 +17,4 @@ std::vector<float> apply_high_pass_filter(std::vector<float> initial_sound, int 
 
 std::vector<float> execute_recursive_step(std::vector<float> initial_sound, std::vector<float> a_vector, 
                                 std::vector<float> b_vector, int brillance, int buffer_size, float & y1, float & y2, float & x1, float & x2);
-#endif
+
