@@ -44,7 +44,26 @@ Autres commandes sur les touches :
 |--- |--- |
 |+| Volume up |
 |-| Volume down |
-| | Octave up |
-|| Octave down |
+| w| Octave up |
+|x| Octave down |
 |*| start|
 |/| stop|
+
+(Nadia)
+|m| |
+|n| |
+
+|0| |
+
+Filtre bande passante, synthèse soustractive (Benjamin)
+|p| view Fourier / pass filter|
+|o|Reset pass filter (variables)|
+
+
+|1| omega0 +|
+|2| omega0 -|
+
+|4| quality +|
+|5| quality -|
+
+|not def| switch lpf / lpf + hpf / hpf / rien|
