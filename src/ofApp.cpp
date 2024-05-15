@@ -407,6 +407,17 @@ if (key == 'm'){
     omega0 = MIN(PI, MAX(0, omega0));
     reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
+    if (key == '2'){
+      std::cout << "Changing octave" << std::endl;
+      if (keyboard_ctrl_modifier){
+        octave-=1;
+      }else{
+        octave+=1;
+      }
+      octave = MIN(20, MAX(0, octave));
+
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
+  }
   if (key == '4'){
     if (keyboard_ctrl_modifier){
       quality-=0.05;
@@ -461,7 +472,11 @@ if (key == 'm'){
   if (key == 'j') {note = 11;}
 // std::cout << note << std::endl;
 // std::cout << key << std::endl;
-frequence_pitch = keytofrequency(octave, note, pitch, A4frequency, A4pitch);
+
+  frequence_pitch = keytofrequency(octave, note, pitch, A4frequency, A4pitch);
+  phaseAdderTarget = (frequence_pitch / (float)sampleRate) * TWO_PI;
+  std::cout << frequence_pitch << std::endl;
+
 }
 
 
@@ -587,7 +602,7 @@ void ofApp::audioOut(ofSoundBuffer &buffer) {
         sample = (2/PI)*somme; 
       }
       lAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
-      rAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
+      rAudio[i] = buffer[i * buffer.getNumChannels()+1] =sample * volume * leftScale;
       /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
           sample * volume * rightScale;*/
     }
