@@ -15,15 +15,11 @@ void ofApp::setup() {
   phaseAdderTarget = 0.0f;
   volume = 0.1f;
   bNoise = false;
-  keyboard_ctrl_modifier = false;
+
   use_pass_filter = false;
 
 	omega0 = 0.1;
   quality = 0.8;
-
-  current_filter = 0;
-  use_LPF=false;
-  use_HPF=false;
 
 	x1_pass_filter = 0;
 	x2_pass_filter = 0;
@@ -37,7 +33,7 @@ void ofApp::setup() {
 
   soundStream.printDeviceList();
  
-  
+ 
   ofSoundStreamSettings settings;
 
   //++++
@@ -207,7 +203,7 @@ if (!use_pass_filter){
 
   
   left_transform = soustractive_synthese(lAudio, 2, lAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, use_LPF, use_HPF);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
   
 }
 
@@ -250,7 +246,7 @@ if (!use_pass_filter){
 
   
   right_transform = soustractive_synthese(rAudio, 2, rAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, use_LPF, use_HPF);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
   
 }
 
@@ -298,9 +294,8 @@ if (!bNoise) {
 }
   if (use_pass_filter){
     reportString += "omega_0: (" + ofToString(omega0, 2) + 
-                    ") modify with 1/ctrl+1 keys\nquality: (" + ofToString(quality, 2) +
-                    "modify with 4/ctrl+4 keys\nFilter configuration: LPF:" + 
-                    ofToString(use_LPF) + " HPF: " + ofToString(use_HPF) + "modify with 3";
+                    ") modify with 1/2 keys\nquality: (" + ofToString(quality, 2) +
+                    "modify with 4/5 keys";
   }
 ofDrawBitmapString(reportString, 954, 200);
 
@@ -348,7 +343,6 @@ for(int i = 0; i < numKeys; i++) {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-  std::cout << key << std::endl;
   if (key == '-' || key == '_') {
     volume -= 0.05;
     volume = MAX(volume, 0);
@@ -360,43 +354,26 @@ void ofApp::keyPressed(int key) {
   if (key == '*') {
     soundStream.start();
   }
-  if (key == 3682){
-    keyboard_ctrl_modifier = true;
-  }
+
   if (key == '/') {
     soundStream.stop();
   }
   if (key == '1'){
-    if (keyboard_ctrl_modifier){
-      omega0-=0.05;
-    }else{
-      omega0+=0.05;
-    }
-    omega0 = MIN(PI, MAX(0, omega0));
+    omega0-=0.05;
     reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
-  if (key == '4'){
-    if (keyboard_ctrl_modifier){
-      quality-=0.05;
-    }else{
-      quality+=0.05;
-    }
-    quality = MIN(1, MAX(0, quality));
+  if (key == '2'){
+    omega0+=0.05;
     reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
-
-  if (key == '3'){
-    current_filter+=1;
-    int id = current_filter%4;
-    if (id==0){
-      use_LPF = false; use_HPF=false;
-    }else if (id == 1){
-      use_LPF = true; use_HPF=false;
-    }else if(id == 2){
-      use_LPF = false; use_HPF=true;
-    }else{
-      use_LPF = true; use_HPF=true;
-    }
+    if (key == '4'){
+    quality-=0.05;
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
+  }
+  if (key == '5'){
+    quality+=0.05;
+    quality = MAX(0.1, quality);
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   if (key == 'p'){
     use_pass_filter = !(use_pass_filter);
@@ -415,32 +392,24 @@ void ofApp::keyPressed(int key) {
   reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   // PIANO keys and corresponding notes
-  float getFrequencyForKey(int key) {
-    switch (key) {
-        case 'q': return 261.63; // C4
-        case 'z': return 277.18; // C#4
-        case 's': return 293.66; // D4
-        case 'e': return 311.13; // D#4
-        case 'd': return 329.63; // E4
-        case 'f': return 349.23; // F4
-        case 't': return 369.99; // F#4
-        case 'g': return 392.00; // G4
-        case 'y': return 415.30; // G#4
-        case 'h': return 440.00; // A4
-        case 'u': return 466.16; // A#4
-        case 'j': return 493.88; // B4
-        default: return 0.0f; // no frequency for unrecognized key
-    }
-}
+  if (key == 'q'){note = 0;}
+  if (key == 'z'){note = 1;}
+  if (key == 's'){note = 2;}
+  if (key == 'e'){note= 3;}
+  if (key == 'd') {note = 4;} 
+  if (key == 'f') {note = 5;}
+  if (key == 't') {note = 6;}
+  if (key == 'g') {note = 7;}
+  if (key == 'y') {note = 8;}
+  if (key == 'h') {note = 9;}
+  if (key == 'u') {note = 10;}
+  if (key == 'j') {note = 11;}
 
 }
+
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key) {
-  if (key == 3682){
-    keyboard_ctrl_modifier = false;
-  }
-}
+void ofApp::keyReleased(int key) {}
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {

@@ -43,6 +43,8 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
+		float calculateFrequency(int key);
+
 		void audioOut(ofSoundBuffer & buffer);
 		//------ calculate the pitch
 		int keytopitch(int key, int  baseoctave, int note);
@@ -81,7 +83,6 @@ class ofApp : public ofBaseApp{
 		float x2_pass_filter;
 		float y1_pass_filter;
 		float y2_pass_filter;
-		float getFrequencyForKey(int key);
 
 
 		//---------- for calculate frequency from keyboard input and note
@@ -90,4 +91,5 @@ class ofApp : public ofBaseApp{
 		int op;
 		float f;
 		int brillance;
+		float frequency;
 };
