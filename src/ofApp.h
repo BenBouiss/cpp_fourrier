@@ -31,7 +31,7 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 
-		void keyPressed (int key);
+		void keyPressed  (int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
 		void mouseDragged(int x, int y, int button);
@@ -42,9 +42,7 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-
-		float calculateFrequency(int key);
-
+		
 		void audioOut(ofSoundBuffer & buffer);
 		//------ calculate the pitch
 		int keytopitch(int  octave, int note);
@@ -86,7 +84,6 @@ class ofApp : public ofBaseApp{
 		float y1_pass_filter;
 		float y2_pass_filter;
 
-
 		//---------- for calculate frequency from keyboard input and note
 		int octave;
 		int note;
@@ -97,5 +94,4 @@ class ofApp : public ofBaseApp{
 		int op;
 		float f;
 		int brillance;
-		float frequency;
 };
