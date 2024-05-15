@@ -71,6 +71,7 @@ class ofApp : public ofBaseApp{
 
 		//-------------------- Substractive synth stuff
 		bool use_pass_filter;
+		bool listen_pass;
 		int current_filter;
 		bool use_LPF;
 		bool use_HPF;
