@@ -27,24 +27,43 @@ Touches sur le clavier et notes correspondantes:
 | Touches clavier | Note |
 |--- |--- |
 |q|Do |
-|s|Do# | 
-|d|Ré |
-|f |Ré# | 
-|g |Mi | 
-|h|Fa | 
-|j|Fa# | 
-|k|Sol | 
-|l|Sol# | 
-|m|La | 
-|ù|La# | 
-|*|fzuSi |
+|z|Do# | 
+|s|Ré |
+|e |Ré# | 
+|d |Mi | 
+|f|Fa | 
+|t|Fa# | 
+|g|Sol | 
+|y|Sol# | 
+|h|La | 
+|u|La# | 
+|j|fzuSi |
 
 Autres commandes sur les touches : 
 | Touches clavier | Action |
 |--- |--- |
 |+| Volume up |
 |-| Volume down |
-|w| Octave up |
+| w| Octave up |
 |x| Octave down |
-|s| start|
-s
+|*| start|
+|/| stop|
+
+(Nadia)
+|m| |
+|n| |
+
+|0| |
+
+Filtre bande passante, synthèse soustractive (Benjamin)
+|p| view Fourier / pass filter|
+|o|Reset pass filter (variables)|
+
+
+|1| omega0 +|
+|2| omega0 -|
+
+|4| quality +|
+|5| quality -|
+
+|not def| switch lpf / lpf + hpf / hpf / rien|

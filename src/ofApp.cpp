@@ -1,6 +1,8 @@
 #include "ofApp.h"
 #include "utils.h"
 #include "sound_generation.h"
+
+#include "sound_generation.h"
 //--------------------------------------------------------------
 void ofApp::setup() {
 
@@ -27,11 +29,22 @@ void ofApp::setup() {
 
   lAudio.assign(bufferSize, 0.0);
   rAudio.assign(bufferSize, 0.0);
+  //carre.assign(bufferSize, 0.0);
 
   soundStream.printDeviceList();
  
  
   ofSoundStreamSettings settings;
+
+  //++++
+  f=440;
+  op=2;
+  brillance=40;
+ 
+  
+  //int scintillance=20;
+
+ // float f=440.0;
 
   // if you want to set the device id to be different than the default:
   //
@@ -153,7 +166,7 @@ void ofApp::draw() {
   ofTranslate(32, 150, 0);
 
   ofSetColor(225);
-  ofDrawBitmapString("Left Channel", 474, 18);
+  ofDrawBitmapString("Right Channel", 474, 18);
 
   ofSetLineWidth(1);
   ofDrawRectangle(470, 0, 430, 200);
@@ -171,7 +184,7 @@ void ofApp::draw() {
   ofPopMatrix();
   ofPopStyle();
 
-// Draw FOURRIER LEFT channel:
+// Draw fourier LEFT channel:
 ofPushStyle();
 ofPushMatrix();
 ofTranslate(32, 375, 0);
@@ -182,7 +195,7 @@ std::vector<float> left_transform;
 if (!use_pass_filter){
   ofDrawBitmapString("Fourier transform (Left channel)", 4, 18);
 
-  left_transform = get_fourrier_transform_from_signal(lAudio, sampleRate);
+  left_transform = get_fourier_transform_from_signal(lAudio, sampleRate);
 }else{
   ofDrawBitmapString("Pass-filter", 4, 18);
   //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
@@ -190,7 +203,7 @@ if (!use_pass_filter){
 
   
   left_transform = soustractive_synthese(lAudio, 2, lAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, true);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
   
 }
 
@@ -203,10 +216,10 @@ ofSetColor(245, 58, 135);
 ofSetLineWidth(3);
 
 ofBeginShape();
-float max_val_left = *std::max_element(left_transform.begin(), left_transform.end()); 
+//float max_val = *std::max_element(left_transform.begin(), left_transform.end()); 
 for (unsigned int i = 0; i < lAudio.size(); i++) {
   float x = ofMap(i, 0, left_transform.size(), 0, 430, true);
-  float y = ofMap(left_transform[i], 0, max_val_left, 0, 200, true);
+  float y = ofMap(left_transform[i], -1, 1, 0, 200, true);
   //ofVertex(x, 200 - left_transform[i]);
   ofVertex(x, 200 - y);
 }
@@ -215,7 +228,7 @@ ofEndShape(false);
 ofPopMatrix();
 ofPopStyle();
 
-// Draw FOURRIER RIGHT channel:
+// Draw fourier RIGHT channel:
 ofPushStyle();
 ofPushMatrix();
 ofTranslate(32, 375, 0);
@@ -225,7 +238,7 @@ std::vector<float> right_transform;
 if (!use_pass_filter){
   ofDrawBitmapString("Fourier transform (Right Channel)", 474, 18);
 
-  right_transform = get_fourrier_transform_from_signal(rAudio, sampleRate);
+  right_transform = get_fourier_transform_from_signal(rAudio, sampleRate);
 }else{
   ofDrawBitmapString("Pass-filter",474, 18);
   //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
@@ -233,11 +246,11 @@ if (!use_pass_filter){
 
   
   right_transform = soustractive_synthese(rAudio, 2, rAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, true);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
   
 }
 
-print_array_float(rAudio);
+
 ofSetLineWidth(1);
 ofDrawRectangle(0, 0, 430, 200);
 
@@ -245,10 +258,10 @@ ofSetColor(245, 58, 135);
 ofSetLineWidth(3);
 
 ofBeginShape();
-float max_val_right = *std::max_element(right_transform.begin(), right_transform.end()); 
+//max_val = *std::max_element(right_transform.begin(), right_transform.end()); 
 for (unsigned int i = 0; i < rAudio.size(); i++) {
   float x = ofMap(i, 0, right_transform.size(), 470, 900, true);
-  float y = ofMap(right_transform[i], 0, max_val_right, 0, 200, true);
+  float y = ofMap(right_transform[i], -1, 1, 0, 200, true);
   ofVertex(x, 200 - y);
 }
 ofEndShape(false);
@@ -346,16 +359,20 @@ void ofApp::keyPressed(int key) {
   }
   if (key == '1'){
     omega0-=0.05;
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   if (key == '2'){
     omega0+=0.05;
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
     if (key == '4'){
     quality-=0.05;
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   if (key == '5'){
     quality+=0.05;
     quality = MAX(0.1, quality);
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   if (key == 'p'){
     use_pass_filter = !(use_pass_filter);
@@ -364,12 +381,24 @@ void ofApp::keyPressed(int key) {
     omega0 = 0.1;
     quality = 0.8;
 
-    x1_pass_filter = 0;
-    x2_pass_filter = 0;
-
-    y1_pass_filter = 0;
-    y2_pass_filter = 0;
+  reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
+  // PIANO keys and corresponding notes
+  if (key == 'q'){note = 0;}
+  if (key == 'z'){note = 1;}
+  if (key == 's'){note = 2;}
+  if (key == 'e'){note= 3;}
+  if (key == 'd') {note = 4;} 
+  if (key == 'f') {note = 5;}
+  if (key == 't') {note = 6;}
+  if (key == 'g') {note = 7;}
+  if (key == 'y') {note = 8;}
+  if (key == 'h') {note = 9;}
+  if (key == 'u') {note = 10;}
+  if (key == 'j') {note = 11;}
+
+
+
 }
 
 //--------------------------------------------------------------
@@ -407,7 +436,7 @@ void ofApp::mouseExited(int x, int y) {}
 void ofApp::windowResized(int w, int h) {}
 
 //--------------------------------------------------------------
-void ofApp::audioOut(ofSoundBuffer &buffer) {
+/*void ofApp::audioOut(ofSoundBuffer &buffer) {
   // pan = 0.5f;
   float leftScale = 1 - pan;
   float rightScale = pan;
@@ -437,10 +466,76 @@ void ofApp::audioOut(ofSoundBuffer &buffer) {
           sample * volume * rightScale;
     }
   }
-}
 
+
+  
+}
+*/
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg) {}
 
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo) {}
+
+
+//--------------------------------------------------------------
+int keytopitch(int key, int  baseoctave, int note) {
+
+  return baseoctave * 12 + note;
+
+}
+
+
+void ofApp::audioOut(ofSoundBuffer &buffer) {
+  // pan = 0.5f;
+  float leftScale = 1 - pan;
+  float rightScale = pan;
+  //+++
+  float somme;
+  float sample;
+
+  // sin (n) seems to have trouble when n is very large, so we
+  // keep phase in the range of 0-TWO_PI like this:
+  while (phase > TWO_PI) {
+    phase -= TWO_PI;
+  }
+
+  if (bNoise == true) {
+    // ---------------------- noise --------------
+    for (size_t i = 0; i < buffer.getNumFrames(); i++) {
+      lAudio[i] = buffer[i * buffer.getNumChannels()] =
+          ofRandom(0, 1) * volume * leftScale;
+      /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
+          ofRandom(0, 1) * volume * rightScale;*/
+    }
+  } else {
+    
+    phaseAdder = 0.95f * phaseAdder + 0.05f * phaseAdderTarget;
+    for (size_t i = 0; i < buffer.getNumFrames(); i++) {
+      phase += phaseAdder;
+
+      if (op==0){sample = sin(phase); }
+      //carré
+      else if (op==1){   
+        somme=0.0;
+        for (size_t k = 0; k < brillance; k++) {                     
+        somme=somme+4/PI*(sin((2*k+1)*phase))/(2*k+1);      
+        }   
+        sample = somme;
+      }
+      else {   //if (op==2)
+        somme=0.0;
+        for (size_t k = 1; k < brillance; k++) {
+          float sign = k % 2 == 0 ? 1.f : -1.f;                     
+          somme = somme + sign*(sin(k*phase)/k);   
+        }   
+        sample = (2/PI)*somme; 
+      }
+      lAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
+      rAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
+      /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
+          sample * volume * rightScale;*/
+    }
+  /*}*/
+}
+}
