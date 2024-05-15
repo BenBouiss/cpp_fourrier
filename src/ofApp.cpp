@@ -265,7 +265,7 @@ if (!bNoise) {
                     ") modify with 1/2 keys\nquality: (" + ofToString(quality, 2) +
                     "modify with 4/5 keys";
   }
-ofDrawBitmapString(reportString, 954, 200);| 
+ofDrawBitmapString(reportString, 954, 200);
 
 // PIANO
 
