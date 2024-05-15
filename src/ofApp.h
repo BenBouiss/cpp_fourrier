@@ -78,4 +78,7 @@ class ofApp : public ofBaseApp{
 		//---------- for calculate frequency from keyboard input and note
 		int baseoctave = 4;
 		int note;
+		int op;
+		float f;
+		int brillance;
 };
