@@ -96,4 +96,6 @@ class ofApp : public ofBaseApp{
 		int op;
 		float f;
 		int brillance;
+		std::string name_wave;
+
 };

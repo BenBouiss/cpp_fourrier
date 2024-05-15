@@ -48,8 +48,8 @@ void ofApp::setup() {
 
   //++++
   f=440;
-  op=2;
-  brillance=40;
+  op=0;
+  brillance=10;
  
   
   //int scintillance=20;
@@ -372,6 +372,32 @@ void ofApp::keyPressed(int key) {
   if (key == '/') {
     soundStream.stop();
   }
+
+// modification de brillance
+if (key == 'm'){
+    brillance+=1;
+  }
+  if (key == 'n'){
+    if (brillance > 0){
+      brillance-=1;
+    }
+  }
+// choix de type de signal
+    if (key == '0'){
+    op+=1;
+    op=op%3;
+    if (op==0){
+    name_wave.assign(" sinusoidal ");
+    }
+    else if (op==1){
+    name_wave.assign(" square ");
+    }
+    else if (op==2){
+    name_wave.assign(" sawtooth ");      
+    }
+    
+  }
+
   if (key == '1'){
     if (keyboard_ctrl_modifier){
       omega0-=0.05;
@@ -538,7 +564,7 @@ void ofApp::audioOut(ofSoundBuffer &buffer) {
           ofRandom(0, 1) * volume * rightScale;*/
     }
   } else {
-    
+  
     phaseAdder = 0.95f * phaseAdder + 0.05f * phaseAdderTarget;
     for (size_t i = 0; i < buffer.getNumFrames(); i++) {
       phase += phaseAdder;
