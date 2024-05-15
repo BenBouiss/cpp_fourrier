@@ -36,14 +36,8 @@ void ofApp::setup() {
   //carre.assign(bufferSize, 0.0);
 
   soundStream.printDeviceList();
-
-  //settings audio initiaux La4
-  octave = 4;
-  //frequence_pitch = 440;
-  //pitch = 57;
-
  
- 
+  
   ofSoundStreamSettings settings;
 
   //++++
@@ -242,7 +236,7 @@ if (!use_pass_filter){
   
 }
 
-//print_array_float(rAudio);
+
 ofSetLineWidth(1);
 ofDrawRectangle(0, 0, 430, 200);
 
@@ -278,7 +272,7 @@ string reportString = "volume: (" + ofToString(volume, 2) +
                       ") modify with -/+ keys\npan: (" + ofToString(pan, 2) +
                       ") modify with mouse x\nsynthesis: ";
 if (!bNoise) {
-  reportString += "sine wave (" + ofToString(frequence_pitch, 2) +
+  reportString += "sine wave (" + ofToString(targetFrequency, 2) +
                   "hz) modify with mouse y\n";
 } else {
   reportString += "noise";
@@ -395,7 +389,7 @@ void ofApp::keyPressed(int key) {
   reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   // PIANO keys and corresponding notes
-  if (key == 'q'){note = 0; }
+  if (key == 'q'){note = 0;}
   if (key == 'z'){note = 1;}
   if (key == 's'){note = 2;}
   if (key == 'e'){note= 3;}
@@ -407,12 +401,10 @@ void ofApp::keyPressed(int key) {
   if (key == 'h') {note = 9;}
   if (key == 'u') {note = 10;}
   if (key == 'j') {note = 11;}
-// std::cout << note << std::endl;
-// std::cout << key << std::endl;
-frequence_pitch = keytofrequency(octave, note, pitch, A4frequency, A4pitch);
+
+
+
 }
-
-
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key) {
@@ -473,7 +465,6 @@ void ofApp::windowResized(int w, int h) {}
           ofRandom(0, 1) * volume * rightScale;
     }
   } else {
-    cout << "La valeur de la fréquence est : " <<frequence_pitch << endl;
     phaseAdder = 0.95f * phaseAdder + 0.05f * phaseAdderTarget;
     for (size_t i = 0; i < buffer.getNumFrames(); i++) {
       phase += phaseAdder;
@@ -497,21 +488,63 @@ void ofApp::dragEvent(ofDragInfo dragInfo) {}
 
 
 //--------------------------------------------------------------
-int ofApp::keytopitch(int octave, int note) {
+int keytopitch(int key, int  baseoctave, int note) {
 
-  return octave * 12 + note;
+  return baseoctave * 12 + note;
 
 }
 
-// Function that convert pitch into frequency. Pitch is equal to noctave * 12 + note
 
-float ofApp::pitchToFrequency(int pitch, float A4frequency, int A4pitch){
-	return A4frequency * pow(2, ((pitch - A4pitch) / 12.f));
+void ofApp::audioOut(ofSoundBuffer &buffer) {
+  // pan = 0.5f;
+  float leftScale = 1 - pan;
+  float rightScale = pan;
+  //+++
+  float somme;
+  float sample;
+
+  // sin (n) seems to have trouble when n is very large, so we
+  // keep phase in the range of 0-TWO_PI like this:
+  while (phase > TWO_PI) {
+    phase -= TWO_PI;
+  }
+
+  if (bNoise == true) {
+    // ---------------------- noise --------------
+    for (size_t i = 0; i < buffer.getNumFrames(); i++) {
+      lAudio[i] = buffer[i * buffer.getNumChannels()] =
+          ofRandom(0, 1) * volume * leftScale;
+      /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
+          ofRandom(0, 1) * volume * rightScale;*/
+    }
+  } else {
+    
+    phaseAdder = 0.95f * phaseAdder + 0.05f * phaseAdderTarget;
+    for (size_t i = 0; i < buffer.getNumFrames(); i++) {
+      phase += phaseAdder;
+
+      if (op==0){sample = sin(phase); }
+      //carré
+      else if (op==1){   
+        somme=0.0;
+        for (size_t k = 0; k < brillance; k++) {                     
+        somme=somme+4/PI*(sin((2*k+1)*phase))/(2*k+1);      
+        }   
+        sample = somme;
+      }
+      else {   //if (op==2)
+        somme=0.0;
+        for (size_t k = 1; k < brillance; k++) {
+          float sign = k % 2 == 0 ? 1.f : -1.f;                     
+          somme = somme + sign*(sin(k*phase)/k);   
+        }   
+        sample = (2/PI)*somme; 
+      }
+      lAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
+      rAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
+      /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
+          sample * volume * rightScale;*/
+    }
+  /*}*/
 }
-
-//
-float ofApp::keytofrequency(int octave, int note,int pitch, float A4frequency, int A4pitch){
-	pitch = keytopitch(octave, note);
-  frequence_pitch = pitchToFrequency(pitch, A4frequency, A4pitch);
-  return frequence_pitch;
 }

@@ -48,3 +48,8 @@ void pause_program_execution(){
     std::cin.ignore(std::cin.rdbuf()->in_avail()+1);
 }
 
+// Function that convert pitch into frequency. Pitch is equal to noctave * 12 + note
+
+float pitchToFrequency(int pitch, float A4frequency = 440.f, int A4pitch = 69){
+	return A4frequency * pow(2, ((pitch - A4pitch) / 12.f));
+}
