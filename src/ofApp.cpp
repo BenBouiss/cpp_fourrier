@@ -32,6 +32,12 @@ void ofApp::setup() {
   //carre.assign(bufferSize, 0.0);
 
   soundStream.printDeviceList();
+
+  //settings audio initiaux La4
+  octave = 4;
+  //frequence_pitch = 440;
+  //pitch = 57;
+
  
  
   ofSoundStreamSettings settings;
@@ -250,7 +256,7 @@ if (!use_pass_filter){
   
 }
 
-
+//print_array_float(rAudio);
 ofSetLineWidth(1);
 ofDrawRectangle(0, 0, 430, 200);
 
@@ -287,7 +293,7 @@ string reportString = "volume: (" + ofToString(volume, 2) +
                       ") modify with mouse x\nbrillance: (" + ofToString(brillance, 2) +
                       ") modify with m/n keys\nsynthesis: (";
 if (!bNoise) {
-  reportString += "sine wave (" + ofToString(targetFrequency, 2) +
+  reportString += "sine wave (" + ofToString(frequence_pitch, 2) +
                   "hz) modify with mouse y\n";
 } else {
   reportString += "noise";
@@ -392,7 +398,7 @@ void ofApp::keyPressed(int key) {
   reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   // PIANO keys and corresponding notes
-  if (key == 'q'){note = 0;}
+  if (key == 'q'){note = 0; }
   if (key == 'z'){note = 1;}
   if (key == 's'){note = 2;}
   if (key == 'e'){note= 3;}
@@ -404,8 +410,11 @@ void ofApp::keyPressed(int key) {
   if (key == 'h') {note = 9;}
   if (key == 'u') {note = 10;}
   if (key == 'j') {note = 11;}
-
+// std::cout << note << std::endl;
+// std::cout << key << std::endl;
+frequence_pitch = keytofrequency(octave, note, pitch, A4frequency, A4pitch);
 }
+
 
 
 //--------------------------------------------------------------
@@ -463,6 +472,7 @@ void ofApp::windowResized(int w, int h) {}
           ofRandom(0, 1) * volume * rightScale;
     }
   } else {
+    cout << "La valeur de la fréquence est : " <<frequence_pitch << endl;
     phaseAdder = 0.95f * phaseAdder + 0.05f * phaseAdderTarget;
     for (size_t i = 0; i < buffer.getNumFrames(); i++) {
       phase += phaseAdder;
@@ -478,21 +488,6 @@ void ofApp::windowResized(int w, int h) {}
   
 }
 */
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg) {}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo) {}
-
-
-//--------------------------------------------------------------
-int keytopitch(int key, int  baseoctave, int note) {
-
-  return baseoctave * 12 + note;
-
-}
-
-
 void ofApp::audioOut(ofSoundBuffer &buffer) {
   // pan = 0.5f;
   float leftScale = 1 - pan;
@@ -545,4 +540,30 @@ void ofApp::audioOut(ofSoundBuffer &buffer) {
     }
   /*}*/
 }
+}
+//--------------------------------------------------------------
+void ofApp::gotMessage(ofMessage msg) {}
+
+//--------------------------------------------------------------
+void ofApp::dragEvent(ofDragInfo dragInfo) {}
+
+
+//--------------------------------------------------------------
+int ofApp::keytopitch(int octave, int note) {
+
+  return octave * 12 + note;
+
+}
+
+// Function that convert pitch into frequency. Pitch is equal to noctave * 12 + note
+
+float ofApp::pitchToFrequency(int pitch, float A4frequency, int A4pitch){
+	return A4frequency * pow(2, ((pitch - A4pitch) / 12.f));
+}
+
+//
+float ofApp::keytofrequency(int octave, int note,int pitch, float A4frequency, int A4pitch){
+	pitch = keytopitch(octave, note);
+  frequence_pitch = pitchToFrequency(pitch, A4frequency, A4pitch);
+  return frequence_pitch;
 }
