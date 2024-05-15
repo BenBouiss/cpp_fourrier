@@ -15,11 +15,15 @@ void ofApp::setup() {
   phaseAdderTarget = 0.0f;
   volume = 0.1f;
   bNoise = false;
-
+  keyboard_ctrl_modifier = false;
   use_pass_filter = false;
 
 	omega0 = 0.1;
   quality = 0.8;
+
+  current_filter = 0;
+  use_LPF=false;
+  use_HPF=false;
 
 	x1_pass_filter = 0;
 	x2_pass_filter = 0;
@@ -33,7 +37,7 @@ void ofApp::setup() {
 
   soundStream.printDeviceList();
  
- 
+  
   ofSoundStreamSettings settings;
 
   //++++
@@ -185,7 +189,7 @@ if (!use_pass_filter){
 
   
   left_transform = soustractive_synthese(lAudio, 2, lAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, use_LPF, use_HPF);
   
 }
 
@@ -228,7 +232,7 @@ if (!use_pass_filter){
 
   
   right_transform = soustractive_synthese(rAudio, 2, rAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, use_LPF, use_HPF);
   
 }
 
@@ -275,8 +279,9 @@ if (!bNoise) {
 }
   if (use_pass_filter){
     reportString += "omega_0: (" + ofToString(omega0, 2) + 
-                    ") modify with 1/2 keys\nquality: (" + ofToString(quality, 2) +
-                    "modify with 4/5 keys";
+                    ") modify with 1/ctrl+1 keys\nquality: (" + ofToString(quality, 2) +
+                    "modify with 4/ctrl+4 keys\nFilter configuration: LPF:" + 
+                    ofToString(use_LPF) + " HPF: " + ofToString(use_HPF) + "modify with 3";
   }
 ofDrawBitmapString(reportString, 954, 200);
 
@@ -324,6 +329,7 @@ for(int i = 0; i < numKeys; i++) {
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
+  std::cout << key << std::endl;
   if (key == '-' || key == '_') {
     volume -= 0.05;
     volume = MAX(volume, 0);
@@ -335,26 +341,43 @@ void ofApp::keyPressed(int key) {
   if (key == '*') {
     soundStream.start();
   }
-
+  if (key == 3682){
+    keyboard_ctrl_modifier = true;
+  }
   if (key == '/') {
     soundStream.stop();
   }
   if (key == '1'){
-    omega0-=0.05;
+    if (keyboard_ctrl_modifier){
+      omega0-=0.05;
+    }else{
+      omega0+=0.05;
+    }
+    omega0 = MIN(PI, MAX(0, omega0));
     reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
-  if (key == '2'){
-    omega0+=0.05;
+  if (key == '4'){
+    if (keyboard_ctrl_modifier){
+      quality-=0.05;
+    }else{
+      quality+=0.05;
+    }
+    quality = MIN(1, MAX(0, quality));
     reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
-    if (key == '4'){
-    quality-=0.05;
-    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
-  }
-  if (key == '5'){
-    quality+=0.05;
-    quality = MAX(0.1, quality);
-    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
+
+  if (key == '3'){
+    current_filter+=1;
+    int id = current_filter%4;
+    if (id==0){
+      use_LPF = false; use_HPF=false;
+    }else if (id == 1){
+      use_LPF = true; use_HPF=false;
+    }else if(id == 2){
+      use_LPF = false; use_HPF=true;
+    }else{
+      use_LPF = true; use_HPF=true;
+    }
   }
   if (key == 'p'){
     use_pass_filter = !(use_pass_filter);
@@ -384,7 +407,11 @@ void ofApp::keyPressed(int key) {
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key) {}
+void ofApp::keyReleased(int key) {
+  if (key == 3682){
+    keyboard_ctrl_modifier = false;
+  }
+}
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
