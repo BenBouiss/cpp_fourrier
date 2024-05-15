@@ -45,8 +45,10 @@ class ofApp : public ofBaseApp{
 		
 		void audioOut(ofSoundBuffer & buffer);
 		//------ calculate the pitch
-		int keytopitch(int key, int  baseoctave, int note);
-		
+		int keytopitch(int  octave, int note);
+		float pitchToFrequency(int pitch, float A4frequency, int A4pitch);
+		float keytofrequency(int octave, int note,int pitch, float A4frequency, int A4pitch);
+
 		ofSoundStream soundStream;
 
 		float 	pan;
@@ -83,8 +85,12 @@ class ofApp : public ofBaseApp{
 		float y2_pass_filter;
 
 		//---------- for calculate frequency from keyboard input and note
-		int baseoctave = 4;
+		int octave;
 		int note;
+		int frequence_pitch;
+		int pitch;
+		float A4frequency = 440.f;
+		int A4pitch = 69;
 		int op;
 		float f;
 		int brillance;
