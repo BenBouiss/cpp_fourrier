@@ -153,7 +153,7 @@ void ofApp::draw() {
   ofPopMatrix();
   ofPopStyle();
 
-// Draw FOURRIER LEFT channel:
+// Draw fourier LEFT channel:
 ofPushStyle();
 ofPushMatrix();
 ofTranslate(32, 375, 0);
@@ -164,7 +164,7 @@ std::vector<float> left_transform;
 if (!use_pass_filter){
   ofDrawBitmapString("Fourier transform (Left channel)", 4, 18);
 
-  left_transform = get_fourrier_transform_from_signal(lAudio, sampleRate);
+  left_transform = get_fourier_transform_from_signal(lAudio, sampleRate);
 }else{
   ofDrawBitmapString("Pass-filter", 4, 18);
   //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
@@ -172,7 +172,7 @@ if (!use_pass_filter){
 
   
   left_transform = soustractive_synthese(lAudio, 2, lAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, true);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
   
 }
 
@@ -185,10 +185,10 @@ ofSetColor(245, 58, 135);
 ofSetLineWidth(3);
 
 ofBeginShape();
-float max_val_left = *std::max_element(left_transform.begin(), left_transform.end()); 
+//float max_val = *std::max_element(left_transform.begin(), left_transform.end()); 
 for (unsigned int i = 0; i < lAudio.size(); i++) {
   float x = ofMap(i, 0, left_transform.size(), 0, 430, true);
-  float y = ofMap(left_transform[i], 0, max_val_left, 0, 200, true);
+  float y = ofMap(left_transform[i], -1, 1, 0, 200, true);
   //ofVertex(x, 200 - left_transform[i]);
   ofVertex(x, 200 - y);
 }
@@ -197,7 +197,7 @@ ofEndShape(false);
 ofPopMatrix();
 ofPopStyle();
 
-// Draw FOURRIER RIGHT channel:
+// Draw fourier RIGHT channel:
 ofPushStyle();
 ofPushMatrix();
 ofTranslate(32, 375, 0);
@@ -207,7 +207,7 @@ std::vector<float> right_transform;
 if (!use_pass_filter){
   ofDrawBitmapString("Fourier transform (Right Channel)", 474, 18);
 
-  right_transform = get_fourrier_transform_from_signal(rAudio, sampleRate);
+  right_transform = get_fourier_transform_from_signal(rAudio, sampleRate);
 }else{
   ofDrawBitmapString("Pass-filter",474, 18);
   //std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int brillance, int buffer_size, float & y1, float & y2, 
@@ -215,11 +215,11 @@ if (!use_pass_filter){
 
   
   right_transform = soustractive_synthese(rAudio, 2, rAudio.size(), 
-                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, true);
+                        y1_pass_filter, y2_pass_filter, x1_pass_filter, x2_pass_filter, quality, omega0, true, true, false);
   
 }
 
-print_array_float(rAudio);
+
 ofSetLineWidth(1);
 ofDrawRectangle(0, 0, 430, 200);
 
@@ -227,10 +227,10 @@ ofSetColor(245, 58, 135);
 ofSetLineWidth(3);
 
 ofBeginShape();
-float max_val_right = *std::max_element(right_transform.begin(), right_transform.end()); 
+//max_val = *std::max_element(right_transform.begin(), right_transform.end()); 
 for (unsigned int i = 0; i < rAudio.size(); i++) {
   float x = ofMap(i, 0, right_transform.size(), 470, 900, true);
-  float y = ofMap(right_transform[i], 0, max_val_right, 0, 200, true);
+  float y = ofMap(right_transform[i], -1, 1, 0, 200, true);
   ofVertex(x, 200 - y);
 }
 ofEndShape(false);
@@ -328,16 +328,20 @@ void ofApp::keyPressed(int key) {
   }
   if (key == '1'){
     omega0-=0.05;
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   if (key == '2'){
     omega0+=0.05;
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
     if (key == '4'){
     quality-=0.05;
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   if (key == '5'){
     quality+=0.05;
     quality = MAX(0.1, quality);
+    reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   if (key == 'p'){
     use_pass_filter = !(use_pass_filter);
@@ -346,11 +350,7 @@ void ofApp::keyPressed(int key) {
     omega0 = 0.1;
     quality = 0.8;
 
-    x1_pass_filter = 0;
-    x2_pass_filter = 0;
-
-    y1_pass_filter = 0;
-    y2_pass_filter = 0;
+  reset_pass_filter_coeff(x1_pass_filter, x2_pass_filter, y1_pass_filter, y2_pass_filter);
   }
   // PIANO keys and corresponding notes
   if (key == 'q'){note = 0;}
