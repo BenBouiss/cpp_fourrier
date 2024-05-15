@@ -100,8 +100,26 @@ void ofApp::draw() {
   ofSetColor(245, 58, 135);
   ofSetLineWidth(3);
 
-  ofDrawBitmapString("press '*' to UNPAUSE the audio\npress '/' to PAUSE the audio\npress 'p' to enable/disable pass filter\npress 'r' to reset the pass filter ", 
-      986, 418);
+  // SYSTEM BUTTONS WIKI
+  ofDrawBitmapString("press '*' to UNPAUSE the audio", 986, 420);
+  ofDrawBitmapString("press '/' to PAUSE the audio", 986, 430);
+  ofDrawBitmapString("press 'p' to enable/disable pass filter", 986, 440);
+  ofDrawBitmapString("press 'o' to reset the pass filter", 986, 450);
+  ofDrawBitmapString("-------------------------------------", 986, 460);
+  // PIANO BUTTONS WIKI
+
+  ofDrawBitmapString("press 'q' to play note C", 986, 480);
+  ofDrawBitmapString("press 'z' to play note C#", 986, 490);
+  ofDrawBitmapString("press 's' to play note D", 986, 500);
+  ofDrawBitmapString("press 'e' to play note D#", 986, 510);
+  ofDrawBitmapString("press 'd' to play note E", 986, 520);
+  ofDrawBitmapString("press 'f' to play note F", 986, 530);
+  ofDrawBitmapString("press 't' to play note F#", 986, 540);
+  ofDrawBitmapString("press 'g' to play note G", 986, 550);
+  ofDrawBitmapString("press 'y' to play note G#", 986, 560);
+  ofDrawBitmapString("press 'h' to play note A", 986, 570);
+  ofDrawBitmapString("press 'u' to play note A#", 986, 580);
+  ofDrawBitmapString("press 'j' to play note B", 986, 590);
 
   ofNoFill();
 
@@ -342,7 +360,7 @@ void ofApp::keyPressed(int key) {
   if (key == 'p'){
     use_pass_filter = !(use_pass_filter);
   }
-  if (key == 'r'){
+  if (key == 'o'){
     omega0 = 0.1;
     quality = 0.8;
 
