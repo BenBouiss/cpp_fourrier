@@ -1,6 +1,8 @@
 #include "ofApp.h"
 #include "utils.h"
 #include "sound_generation.h"
+
+#include "sound_generation.h"
 //--------------------------------------------------------------
 void ofApp::setup() {
 
@@ -27,11 +29,22 @@ void ofApp::setup() {
 
   lAudio.assign(bufferSize, 0.0);
   rAudio.assign(bufferSize, 0.0);
+  //carre.assign(bufferSize, 0.0);
 
   soundStream.printDeviceList();
  
  
   ofSoundStreamSettings settings;
+
+  //++++
+  f=440;
+  op=2;
+  brillance=40;
+ 
+  
+  //int scintillance=20;
+
+ // float f=440.0;
 
   // if you want to set the device id to be different than the default:
   //
@@ -135,7 +148,7 @@ void ofApp::draw() {
   ofTranslate(32, 150, 0);
 
   ofSetColor(225);
-  ofDrawBitmapString("Left Channel", 474, 18);
+  ofDrawBitmapString("Right Channel", 474, 18);
 
   ofSetLineWidth(1);
   ofDrawRectangle(470, 0, 430, 200);
@@ -265,7 +278,7 @@ if (!bNoise) {
                     ") modify with 1/2 keys\nquality: (" + ofToString(quality, 2) +
                     "modify with 4/5 keys";
   }
-ofDrawBitmapString(reportString, 954, 200);| 
+ofDrawBitmapString(reportString, 954, 200);
 
 // PIANO
 
@@ -405,7 +418,7 @@ void ofApp::mouseExited(int x, int y) {}
 void ofApp::windowResized(int w, int h) {}
 
 //--------------------------------------------------------------
-void ofApp::audioOut(ofSoundBuffer &buffer) {
+/*void ofApp::audioOut(ofSoundBuffer &buffer) {
   // pan = 0.5f;
   float leftScale = 1 - pan;
   float rightScale = pan;
@@ -439,7 +452,7 @@ void ofApp::audioOut(ofSoundBuffer &buffer) {
 
   
 }
-
+*/
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg) {}
 
@@ -452,4 +465,59 @@ int keytopitch(int key, int  baseoctave, int note) {
 
   return baseoctave * 12 + note;
 
+}
+
+
+void ofApp::audioOut(ofSoundBuffer &buffer) {
+  // pan = 0.5f;
+  float leftScale = 1 - pan;
+  float rightScale = pan;
+  //+++
+  float somme;
+  float sample;
+
+  // sin (n) seems to have trouble when n is very large, so we
+  // keep phase in the range of 0-TWO_PI like this:
+  while (phase > TWO_PI) {
+    phase -= TWO_PI;
+  }
+
+  if (bNoise == true) {
+    // ---------------------- noise --------------
+    for (size_t i = 0; i < buffer.getNumFrames(); i++) {
+      lAudio[i] = buffer[i * buffer.getNumChannels()] =
+          ofRandom(0, 1) * volume * leftScale;
+      /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
+          ofRandom(0, 1) * volume * rightScale;*/
+    }
+  } else {
+    
+    phaseAdder = 0.95f * phaseAdder + 0.05f * phaseAdderTarget;
+    for (size_t i = 0; i < buffer.getNumFrames(); i++) {
+      phase += phaseAdder;
+
+      if (op==0){sample = sin(phase); }
+      //carré
+      else if (op==1){   
+        somme=0.0;
+        for (size_t k = 0; k < brillance; k++) {                     
+        somme=somme+4/PI*(sin((2*k+1)*phase))/(2*k+1);      
+        }   
+        sample = somme;
+      }
+      else {   //if (op==2)
+        somme=0.0;
+        for (size_t k = 1; k < brillance; k++) {
+          float sign = k % 2 == 0 ? 1.f : -1.f;                     
+          somme = somme + sign*(sin(k*phase)/k);   
+        }   
+        sample = (2/PI)*somme; 
+      }
+      lAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
+      rAudio[i] = buffer[i * buffer.getNumChannels()] =sample * volume * leftScale;
+      /*rAudio[i] = buffer[i * buffer.getNumChannels() + 1] =
+          sample * volume * rightScale;*/
+    }
+  /*}*/
+}
 }

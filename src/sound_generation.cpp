@@ -82,4 +82,25 @@ std::vector<float> soustractive_synthese(std::vector<float> initial_sound, int b
     }
     return current_sound;
 }
+/*
+std::vector<float> carre_synthese(int scintillance, int buffer_size, float f){
 
+    std::vector<float> carre(buffer_size);  
+    float somme;
+    float sampleRate1=44100;
+    float phaseAdderSynthesis= (f/ (float)sampleRate1) * TWO_PI;
+    float phase=0; 
+
+    for (size_t i = 0; i < buffer_size; i++) {
+        somme=0;
+        phase += phaseAdderSynthesis;
+        for (size_t k = 0; k < scintillance; k++) {   
+                  
+        somme=somme+4/PI*(sin((2*k+1)*phase))/(2*k+1);      
+        }       
+        carre[i]=somme;   
+    }
+
+    return carre;
+}
+*/
