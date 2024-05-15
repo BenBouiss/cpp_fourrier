@@ -63,15 +63,22 @@ class ofApp : public ofBaseApp{
 		float 	phaseAdder;
 		float 	phaseAdderTarget;
 
+
+		// key modifiers
+		bool keyboard_ctrl_modifier;
+
 		//-------------------- Substractive synth stuff
 		bool use_pass_filter;
+		int current_filter;
+		bool use_LPF;
+		bool use_HPF;
+
 
 		float omega0;
 		float quality;
 
 		float x1_pass_filter;
 		float x2_pass_filter;
-
 		float y1_pass_filter;
 		float y2_pass_filter;
 
