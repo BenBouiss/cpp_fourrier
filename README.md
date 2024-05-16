@@ -62,8 +62,7 @@ Autres commandes sur les touches :
 
 | Touches clavier | fonction |
 |--- |--- |
-|m| brillance +|
-|n| brillance -|
+|m/n| brillance +1/-1|
 |0| switch entre sin/saw/square wave|
 
 Filtre bande passante, synthèse soustractive (Benjamin)
