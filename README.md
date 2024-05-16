@@ -59,10 +59,10 @@ Autres commandes sur les touches :
 |/| stop|
 
 (Nadia)
-|m| |
-|n| |
+|m| brillance +|
+|n| brillance -|
 
-|0| |
+|0| switch entre sin/saw/square wave|
 
 Filtre bande passante, synthèse soustractive (Benjamin)
 |p| view Fourier / pass filter|
@@ -70,9 +70,12 @@ Filtre bande passante, synthèse soustractive (Benjamin)
 
 
 |1| omega0 +|
-|2| omega0 -|
+|ctrl+1| omega0 -|
+
+|3| cycle through filters lpf / lpf + hpf / hpf / rien|
 
 |4| quality +|
-|5| quality -|
+|ctrl+4| quality -|
 
-|not def| switch lpf / lpf + hpf / hpf / rien|
+|5| hold pour écouter le son filtré|
+
