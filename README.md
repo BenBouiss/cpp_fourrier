@@ -62,22 +62,16 @@ Autres commandes sur les touches :
 | Touches clavier | fonction |
 |m| brillance +|
 |n| brillance -|
-
 |0| switch entre sin/saw/square wave|
 
 Filtre bande passante, synthèse soustractive (Benjamin)
 
 | Touches clavier | fonction |
 |--- |--- |
-
 |o(lettre)|Reset pass filter (variables)|
-
-
 |1| omega0 +|
 |ctrl+1| omega0 -|
-
 |3| cycle through filters lpf / lpf + hpf / hpf / rien|
-
 |4| quality +|
 |ctrl+4| quality -|
 
