@@ -6,7 +6,7 @@ Installation nécessaire de Open Frameworks: https://openframeworks.cc/
 
 Une fois l'archive téléchargé et décompressé, ce git repo doit être cloné dans la structure suivante of_untar_folder/examples/sound/. Git clone git@github.com:BenBouiss/cpp_fourrier.git à lancé ici.
 
-Lancé make dans le git cloné puis make run pour lancé l'application.
+Lancer make dans le git cloné puis make run pour lancé l'application.
 # Synthétiseur
 
 
