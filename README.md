@@ -59,14 +59,18 @@ Autres commandes sur les touches :
 |/| stop|
 
 (Nadia)
+| Touches clavier | fonction |
 |m| brillance +|
 |n| brillance -|
 
 |0| switch entre sin/saw/square wave|
 
 Filtre bande passante, synthèse soustractive (Benjamin)
-|p| view Fourier / pass filter|
-|o|Reset pass filter (variables)|
+
+| Touches clavier | fonction |
+|--- |--- |
+
+|o(lettre)|Reset pass filter (variables)|
 
 
 |1| omega0 +|
