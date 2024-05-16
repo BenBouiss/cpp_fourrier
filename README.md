@@ -69,11 +69,8 @@ Filtre bande passante, synthèse soustractive (Benjamin)
 | Touches clavier | fonction |
 |--- |--- |
 |o(lettre)|Reset pass filter (variables)|
-|1| omega0 +|
-|ctrl+1| omega0 -|
-|3| cycle through filters lpf / lpf + hpf / hpf / rien|
-|4| quality +|
-|ctrl+4| quality -|
-
+|1/ctrl+1| omega0 +1/-1|
+|3| switch filters lpf / lpf + hpf / hpf / rien|
+|4/ctrl+4| quality +1/-1|
 |5| hold pour écouter le son filtré|
 
